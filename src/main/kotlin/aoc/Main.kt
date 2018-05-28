@@ -1,11 +1,13 @@
+@file:JvmName("Main")
+
 package aoc
 
 fun main(args: Array<String>): Unit {
-  //require(args.isEmpty, s"args.isEmpty failed; with >${args.toList}<")
+  //assert(args.size == 0, "args.size == 0 failed; with >${args.size}<")
 
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
+  println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
 /*
-  println(s"Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
   println(s"Day02: Part1: checksum -> ${Day02.Part1.solve(Day02.input)}")
   println(s"Day02: Part2: checksum -> ${Day02.Part2.solve(Day02.input)}")
   println(s"Day03: Part1: distance -> ${Day03.Part1.solve(Day03.input)}")
