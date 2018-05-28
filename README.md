@@ -2,6 +2,9 @@
 
 To make this work you need to ...
 
+* clone the repo
 * install kotlin
 * install gradle
-* ???
+* run `gradle build`
+* run `gradle test`
+* run `gradle run`

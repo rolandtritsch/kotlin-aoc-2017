@@ -5,7 +5,7 @@ plugins {
 
 def kotlin_version = '1.2.41'
 
-mainClassName = 'demo.MainApp'
+mainClassName = 'aoc.Main'
 
 defaultTasks 'build'
 
