@@ -17,7 +17,7 @@ object Day02 {
 
   val input = Util.readInput("Day02input.txt").map { it.split('\t') }.map { line -> line.map { it.toInt() }}
 
-  fun checksum(spreadSheet: List<List<Int>>, processRow: (s: List<List<Int>>) -> List<Int>): Int {
+  fun checksum(spreadSheet: List<List<Int>>, processRow: (List<List<Int>>) -> List<Int>): Int {
     //require(spreadSheet.nonEmpty, "spreadSheet.nonEmpty failed")
     //require(spreadSheet.forall(_.nonEmpty), "spreadSheet.forall(_.nonEmpty) failed")
 
@@ -27,28 +27,23 @@ object Day02 {
 
   object Part1 {
     fun processRow(s: List<List<Int>>): List<Int> {
-      return s.map { (it.max() ?: 0).minus(it.min() ?: 0) }
+      return s.map { (it.max() ?: 0) - (it.min() ?: 0) }
     }
 
     fun solve(spreadSheet: List<List<Int>>): Int {
-      return Day02.checksum(spreadSheet, processRow(spreadSheet))
+      return Day02.checksum(spreadSheet, Part1::processRow)
     }
   }
-/*
+
   object Part2 {
     fun processRow(s: List<List<Int>>): List<Int> {
-      s.map { row -> {
-        val pairs = for(x <- row; y <- row; if x > y) yield (x, y)
-        val dividablePairs = pairs.filter{case (x, y) => (x % y == 0)}
-        // assert(dividablePairs.size == 1, s"dividablePairs.size == 1 failed; with >${dividablePairs}<")
-        val (x, y) = dividablePairs.head
-        x / y
-      }}
+      val pairs = s.flatMap { row -> row.flatMap { (0 until row.size).flatMap {x -> (0 until row.size).map { y -> (x to y) }}}}.filter { it.first > it.second }
+      val dividablePair = pairs.filter { (it.first() % it.second()) == 0 }.first()
+      return dividablePair.first() / dividablePair.second()
     }
 
     fun solve(spreadSheet: List<List<Int>>): Int {
-      return Day02.checksum(spreadSheet, processRow)
+      return Day02.checksum(spreadSheet, Part2::processRow)
     }
   }
-*/
 }

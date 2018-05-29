@@ -8,8 +8,8 @@ fun main(args: Array<String>): Unit {
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
   println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
   println("Day02: Part1: checksum -> ${Day02.Part1.solve(Day02.input)}")
+  println("Day02: Part2: checksum -> ${Day02.Part2.solve(Day02.input)}")
 /*
-  println(s"Day02: Part2: checksum -> ${Day02.Part2.solve(Day02.input)}")
   println(s"Day03: Part1: distance -> ${Day03.Part1.solve(Day03.input)}")
   println(s"Day03: Part2: number -> ${Day03.Part2.solve(Day03.input)}")
   println(s"Day04: Part1: countvalid -> ${Day04.Part1.solve(Day04.input)}")
