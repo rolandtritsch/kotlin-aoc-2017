@@ -37,9 +37,18 @@ object Day02 {
 
   object Part2 {
     fun processRow(s: List<List<Int>>): List<Int> {
-      val pairs = s.flatMap { row -> row.flatMap { (0 until row.size).flatMap {x -> (0 until row.size).map { y -> (x to y) }}}}.filter { it.first > it.second }
-      val dividablePair = pairs.filter { (it.first() % it.second()) == 0 }.first()
-      return dividablePair.first() / dividablePair.second()
+      val divs = s.map { row ->
+        val pairs = row.flatMap {
+          (0 until row.size).flatMap { x ->
+            (0 until row.size).map { y ->
+              (row.get(x) to row.get(y))
+            }
+          }
+        }.filter { it.first > it.second }.distinct()
+        val dividablePair = pairs.filter { (it.first % it.second) == 0 }.first()
+        dividablePair.first / dividablePair.second
+      }
+      return divs
     }
 
     fun solve(spreadSheet: List<List<Int>>): Int {
