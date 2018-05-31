@@ -19,19 +19,19 @@ object Day01 {
   val input = Util.readInput("Day01input.txt").first()
 
   fun captcha(digits: String, offset: Int): Int {
-    // require(offset <= digits.size, s"offset <= digits.size failed; with >${offset}< >${digits.size}<")
+    require(offset <= digits.length) { "offset <= digits.length failed; with >${offset}< >${digits.length}<" }
 
     val doubleDigits = (digits + digits).map { it.toString().toInt() }
     val pairs = (0 until digits.length).map { i -> (doubleDigits.get(i) to doubleDigits.get(i + offset)) }
     val sum = pairs.filter { it.first == it.second }.map { it.first }.sum()
+    assert(sum >= 0) { "sum >= 0 failed" }
     return sum
   }
-  //} ensuring(_ >= 0, s"_ >= 0 failed")
 
   object Part1 {
     fun solve(input: String): Int {
-      //require(input.nonEmpty, "input.nonEmpty failed")
-      //require(input.forall(_.isDigit), "input.forall(_.isDigit) failed")
+      require(input.length > 0) { "input.nonEmpty failed" }
+      require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
 
       val captcha = Day01.captcha(input, 1)
       return captcha
@@ -40,9 +40,9 @@ object Day01 {
 
   object Part2 {
     fun solve(input: String): Int {
-      //require(input.nonEmpty, "input.nonEmpty failed")
-      //require(input.forall(_.isDigit), "input.forall(_.isDigit) failed")
-      //require(input.size % 2 == 0, "input.size % 2 == 0 failed")
+      require(input.length > 0) { "input.nonEmpty failed" }
+      require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
+      require(input.length % 2 == 0) { "input.length % 2 == 0 failed" }
 
       val captcha = Day01.captcha(input, input.length / 2)
       return captcha

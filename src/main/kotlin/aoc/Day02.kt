@@ -18,12 +18,11 @@ object Day02 {
   val input = Util.readInput("Day02input.txt").map { it.split('\t') }.map { line -> line.map { it.toInt() }}
 
   fun checksum(spreadSheet: List<List<Int>>, processRow: (List<List<Int>>) -> List<Int>): Int {
-    //require(spreadSheet.nonEmpty, "spreadSheet.nonEmpty failed")
-    //require(spreadSheet.forall(_.nonEmpty), "spreadSheet.forall(_.nonEmpty) failed")
+    require(spreadSheet.size > 0) { "spreadSheet.nonEmpty failed" }
+    require(spreadSheet.all { it.size > 0 }) { "spreadSheet.forall(_.nonEmpty) failed" }
 
     return processRow(spreadSheet).sum()
   }
-  //} ensuring(_ >= 0, s"_ >= 0 failed")
 
   object Part1 {
     fun processRow(s: List<List<Int>>): List<Int> {

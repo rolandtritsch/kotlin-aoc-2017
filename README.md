@@ -8,3 +8,8 @@ To make this work you need to ...
 * run `gradle build`
 * run `gradle test`
 * run `gradle run`
+
+If you want to develop something ...
+
+* run `gradle test --continuous --rerun-tasks`
+  * Note: If one of the tests is failing, you will see a stacktrace, but the build will still be successful.
