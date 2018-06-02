@@ -1,5 +1,8 @@
 package aoc
 
+data class Move(val x: Int, val y: Int)
+typealias Moves = List<List<Move>>
+
 /** Problem: [[https://adventofcode.com/2017/day/3]]
   *
   * Solution:
@@ -32,83 +35,80 @@ package aoc
   * @see [[https://oeis.org/A141481]]
   *
   */
-object Day03 {
 
-  import java.util.stream.Stream
-  import java.util.Iterator
+object Day03 {
 
   val input = Util.readInput("Day03input.txt").first().toInt()
 
-  data class Move(x: Int, y: Int)
-
-  object Move {
+  object Advance {
     val up = Move(-1, 0)
     val down = Move(1, 0)
     val left = Move(0, -1)
     val right = Move(0, 1)
   }
 
-  typealias Moves = List<List<Move>>
-
   val firstLevelMoves = listOf(
-    listOf(Move.right),
-    listOf(Move.up),
-    listOf(Move.left, Move.left),
-    listOf(Move.down, Move.down),
-    listOf(Move.right, Move.right)
+    listOf(Advance.right),
+    listOf(Advance.up),
+    listOf(Advance.left, Advance.left),
+    listOf(Advance.down, Advance.down),
+    listOf(Advance.right, Advance.right)
   )
 
   fun nextLevelMoves(currentLevelMoves: Moves): Moves  {
     require(currentLevelMoves.size > 0) { "currentLevelMoves.nonEmpty failed" }
     require(currentLevelMoves.all { it.size > 0 }) { "currentLevelMoves.all(it.nonEmpty) failed" }
 
-    val next = listOf(
+    val moves = listOf(
       currentLevelMoves.get(0),
-      currentLevelMoves.get(1) + listOf(Move.up, Move.up),
-      currentLevelMoves.get(2) + listOf(Move.left, Move.left),
-      currentLevelMoves.get(3) + listOf(Move.down, Move.down),
-      currentLevelMoves.get(4) + listOf(Move.right, Move.right)
+      currentLevelMoves.get(1) + listOf(Advance.up, Advance.up),
+      currentLevelMoves.get(2) + listOf(Advance.left, Advance.left),
+      currentLevelMoves.get(3) + listOf(Advance.down, Advance.down),
+      currentLevelMoves.get(4) + listOf(Advance.right, Advance.right)
     )
 
-    assert(next.flatten.size() == currentLevelMoves.flatten.size() + 8) { "next.flatten.size() == currentLevelMoves.flatten.size() + 8 failed" }
-    return next
+    assert(moves.flatten().size == currentLevelMoves.flatten().size + 8) {
+      "moves.flatten().size == currentLevelMoves.flatten().size + 8 failed"
+    }
+    return moves
   }
 
-  fun moves(seed: Moves): Stream<Move> = {
-    Stream.iterate(seed, ms -> nextLevelMoves(ms))
+  fun moves(seed: Moves): Sequence<Moves> {
+    return generateSequence(seed, { nextLevelMoves(it) })
   }
 
-  data class Cell(index: Int, value: Int, coordinates: (Int, Int))
+  data class Cell(val index: Int, val value: Int, val coordinates: Pair<Int, Int>)
 
   object Part1 {
-    fun cells(moves: Iterator<Move>): Stream<Cell>  {
+    fun cells(moves: Iterator<Move>): Sequence<Cell> {
       fun nextCell(previousCell: Cell, moves: Iterator<Move>): Cell {
         val move = moves.next()
 
         val thisCellIndex = previousCell.index + 1
-        val thisCellCoordinates = (previousCell.coordinates.first + move.x, previousCell.coordinates.second + move.y)
+        val thisCellCoordinates = Pair(previousCell.coordinates.first + move.x, previousCell.coordinates.second + move.y)
         val thisCellValue = previousCell.value + 1
         val thisCell = Cell(thisCellIndex, thisCellValue, thisCellCoordinates)
         return thisCell
       }
 
-      val centerCell = Cell(0, 1, (0, 0))
-      val cells = Stream.iterate(centerCell, c -> nextCell(c))
+      val centerCell = Cell(0, 1, Pair(0, 0))
+      val cells = generateSequence(centerCell, { nextCell(it, moves) })
       return cells
     }
 
     fun solve(cellValueToFind: Int): Int {
-      val spiral = cells(moves(firstLevelMoves).iterator())
-      val coordinates = spiral.find(c -> c.value == cellValueToFind).get.coordinates
+      val spiral = cells(moves(firstLevelMoves).flatten().flatten().iterator())
+      val coordinates = spiral.find { it.value == cellValueToFind }!!.coordinates
       val distance = calcManhattenDistance(coordinates)
       return distance
     }
 
-    fun calcManhattenDistance(coordinates: (Int, Int)): Int {
+    fun calcManhattenDistance(coordinates: Pair<Int, Int>): Int {
       return Math.abs(coordinates.first) + Math.abs(coordinates.second)
     }
   }
 
+/*
   object Part2 {
     /** Using stream of moves to produce stream of cells.
       *
@@ -161,4 +161,5 @@ object Day03 {
       return nextValue
     }
   }
+*/
 }
