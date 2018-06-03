@@ -1,5 +1,7 @@
 package aoc
 
+typealias PassPhrase = List<String>
+
 /** Problem: [[https://adventofcode.com/2017/day/4]]
   *
   * Solution:
@@ -21,29 +23,30 @@ package aoc
   */
 object Day04 {
 
-  val input = Util.readInput("Day04input.txt").map(_.split(' ').toList)
+  val input = Util.readInput("Day04input.txt").map { it.split(' ').toList() }
 
-  type PassPhrase = List[String]
+  fun isValid(words: PassPhrase): Boolean {
+    require(words.size > 0) { "words.nonEmpty failed" }
 
-  def isValid(words: PassPhrase): Boolean = {
-    require(words.nonEmpty, s"words.nonEmpty failed")
-
-    val groupByWords = words.groupBy(identity)
-    val countByWords = groupByWords.map { case (k, v) => (k, v.size) }
-    countByWords.forall { case (_, count) => count == 1 }
+    val groupByWords = words.groupBy { it }
+    val countByWords = groupByWords.map { it.key to it.value.size }
+    val count = countByWords.all { it.second == 1 }
+    return count
   }
 
-  def countValid(passPhrases: List[PassPhrase]): Int = {
-    require(passPhrases.nonEmpty, s"passPhrases.nonEmpty")
+  fun countValid(passPhrases: List<PassPhrase>): Int {
+    require(passPhrases.size > 0) { "passPhrases.nonEmpty" }
 
-    passPhrases.count(isValid)
-  } ensuring(_ >= 0, s"_ >= 0 failed")
+    val valid = passPhrases.count { isValid(it) }
+    // ensuring(_ >= 0, s"_ >= 0 failed")
+    return valid
+  }
 
   object Part1 {
-    def solve(passPhrases: List[PassPhrase]): Int = countValid(passPhrases)
+    fun solve(passPhrases: List<PassPhrase>): Int = countValid(passPhrases)
   }
 
   object Part2 {
-    def solve(passPhrases: List[PassPhrase]): Int = countValid(passPhrases.map(_.map(_.sorted)))
+    fun solve(passPhrases: List<PassPhrase>): Int = countValid(passPhrases.map { it.map { it.toCharArray().sorted().joinToString("") }})
   }
 }

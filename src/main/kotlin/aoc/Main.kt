@@ -11,9 +11,9 @@ fun main(args: Array<String>): Unit {
   println("Day02: Part2: checksum -> ${Day02.Part2.solve(Day02.input)}")
   println("Day03: Part1: distance -> ${Day03.Part1.solve(Day03.input)}")
   println("Day03: Part2: number -> ${Day03.Part2.solve(Day03.input)}")
+  println("Day04: Part1: countvalid -> ${Day04.Part1.solve(Day04.input)}")
+  println("Day04: Part2: countvalid -> ${Day04.Part2.solve(Day04.input)}")
 /*
-  println(s"Day04: Part1: countvalid -> ${Day04.Part1.solve(Day04.input)}")
-  println(s"Day04: Part2: countvalid -> ${Day04.Part2.solve(Day04.input)}")
   println(s"Day05: Part1: countsteps -> ${Day05.Part1.solve(Day05.input)}")
   println(s"Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input)}")
   println(s"Day06: Part1: cycles -> ${Day06.Part1.solve(Day06.input)}")
