@@ -1,0 +1,22 @@
+sudo: required
+
+language: kotlin
+
+notifications:
+  email:
+    recipients:
+      - roland@tritsch.org
+    on_success: always
+    on_failure: always
+
+before_install:
+  - sudo apt update -y
+  - sudo apt upgrade -y
+
+script:
+  - gradle clean test
+  - gradle clean run
+
+addons:
+  apt:
+    update: true
