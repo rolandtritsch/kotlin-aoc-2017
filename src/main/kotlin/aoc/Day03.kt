@@ -108,7 +108,6 @@ object Day03 {
     }
   }
 
-/*
   object Part2 {
     /** Using stream of moves to produce stream of cells.
       *
@@ -125,41 +124,49 @@ object Day03 {
       * around the given cell and for the once that do not exist yet, I am just
       * getting a value of 0).
       */
-    fun cells(moves: Iterator<Move>): Stream<Cell> {
-      fun nextCell(previousCell: Cell, valuesSoFar: Map<(Int, Int), Int>): Pair(Cell, Map<(Int, Int), Int>) {
+    fun cells(moves: Iterator<Move>): Sequence<Cell> {
+      fun nextCell(p: Pair<Cell, Map<Pair<Int, Int>, Int>>): Pair<Cell, Map<Pair<Int, Int>, Int>> {
         val move = moves.next()
 
+        val previousCell = p.first
+        val valuesSoFar = p.second
+
         val thisCellIndex = previousCell.index + 1
-        val thisCellCoordinates = (previousCell.coordinates.first + move.x, previousCell.coordinates.second + move.y)
+        val thisCellCoordinates = Pair(previousCell.coordinates.first + move.x, previousCell.coordinates.second + move.y)
         val thisCellValue = calcValue(thisCellCoordinates, valuesSoFar)
         val thisCell = Cell(thisCellIndex, thisCellValue, thisCellCoordinates)
-        return (thisCell to (valuesSoFar + (thisCellCoordinates to thisCellValue))
+        val next = Pair(thisCell, (valuesSoFar + Pair(thisCellCoordinates, thisCellValue)))
+        return next
       }
 
-      val centerCell = Cell(0, 1, (0, 0))
-      val valuesSoFar = Map.empty[(Int, Int), Int].withDefaultValue(0) + (centerCell.coordinates -> centerCell.value)
-      val cells = Stream.iterate((centerCell, valuesSoFar), (c, v) -> nextCell(c, v))
+      val centerCell = Cell(0, 1, Pair(0, 0))
+      val valuesSoFar = emptyMap<Pair<Int, Int>, Int>() + Pair(centerCell.coordinates, centerCell.value)
+      val cells = generateSequence(Pair(centerCell, valuesSoFar), { nextCell(it) }).map { it.first }
       return cells
     }
 
-    def solve(cellValueToFind: Int): Int = {
-      val spiral = cells(moves(firstLevelMoves).iterator())
-      val nextBiggerValue = spiral.find(c -> c.value > cellValueToFind).get.value
+    fun solve(cellValueToFind: Int): Int {
+      val spiral = cells(moves(firstLevelMoves).flatten().flatten().iterator())
+      val nextBiggerValue = spiral.find { it.value > cellValueToFind }!!.value
       return nextBiggerValue
     }
 
-    fun calcValue(currentCoordinates: (Int, Int), valuesSoFar: Map<(Int, Int), Int>): Int {
+    fun calcValue(currentCoordinates: Pair<Int, Int>, valuesSoFar: Map<Pair<Int, Int>, Int>): Int {
       require(valuesSoFar.size > 0) { "valuesSoFar.nonEmpty failed" }
 
       val x = currentCoordinates.first
       val y = currentCoordinates.second
 
-      val nextValue = valuesSoFar(x - 1, y) + valuesSoFar(x - 1, y - 1) + valuesSoFar(x - 1, y + 1) +
-        valuesSoFar(x + 1, y) + valuesSoFar(x + 1, y - 1) + valuesSoFar(x + 1, y + 1) +
-        valuesSoFar(x, y - 1) + valuesSoFar(x, y + 1)
-      assert(nextValue -> nextValue == 1 || nextValue > valuesSoFar.values().max())
-      return nextValue
+      val nextValue = (valuesSoFar.get(Pair(x - 1, y)) ?: 0) +
+        (valuesSoFar.get(Pair(x - 1, y - 1)) ?: 0) +
+        (valuesSoFar.get(Pair(x - 1, y + 1)) ?: 0) +
+        (valuesSoFar.get(Pair(x + 1, y)) ?: 0) +
+        (valuesSoFar.get(Pair(x + 1, y - 1)) ?: 0) +
+        (valuesSoFar.get(Pair(x + 1, y + 1)) ?: 0) +
+        (valuesSoFar.get(Pair(x, y - 1)) ?: 0) +
+        (valuesSoFar.get(Pair(x, y + 1)) ?: 0)
+        //assert(nextValue -> nextValue == 1 || nextValue > valuesSoFar.values().max())
+        return nextValue
     }
   }
-*/
 }
