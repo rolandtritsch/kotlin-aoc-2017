@@ -38,7 +38,7 @@ object Day04 {
     require(passPhrases.size > 0) { "passPhrases.nonEmpty" }
 
     val valid = passPhrases.count { isValid(it) }
-    // ensuring(_ >= 0, s"_ >= 0 failed")
+    assert(valid >= 0) { "valid >= 0 failed" }
     return valid
   }
 
