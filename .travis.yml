@@ -1,5 +1,3 @@
-sudo: required
-
 language: kotlin
 
 notifications:
@@ -10,13 +8,12 @@ notifications:
     on_failure: always
 
 before_install:
-  - sudo apt update -y
-  - sudo apt upgrade -y
+  - curl -s "https://get.sdkman.io" | bash
+  - source "$HOME/.sdkman/bin/sdkman-init.sh"
+  - sdk version
+  - sdk install gradle 4.7
+  - gradle --version
 
 script:
-  - gradle clean test
-  - gradle clean run
-
-addons:
-  apt:
-    update: true
+  - gradle test
+  - gradle run
