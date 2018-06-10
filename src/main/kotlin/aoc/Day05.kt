@@ -11,9 +11,8 @@ package aoc
   * Note: The given program will exit at the higher end of the stack, but
   * for completeness we are also checking for the lower bound.
   *
-  * Note: Picking the right [[https://docs.scala-lang.org/overviews/collections/performance-characteristics.html datastructure]] is important (and
-  * in our case right means Vector, because it updates in constant time,
-  * not linear time (like e.g. List)).
+  * Note: Picking the right datastructure is important (and in our case right
+  * means MutableList, because it updates in constant time, not linear time.
   *
   * Part1 - Trivial. Just increase the stack counter by 1.
   *
@@ -27,17 +26,16 @@ object Day05 {
     return stackCounter + stack[stackCounter] < 0 || stackCounter + stack[stackCounter] >= stack.size
   }
 
-  fun countSteps(stack: MutableList<Int>, stackCounter: Int, steps: Int, offset: (Int) -> Int): Int {
+  tailrec fun countSteps(stack: MutableList<Int>, stackCounter: Int, steps: Int, offset: (Int) -> Int): Int {
     require(stack.size > 0) { "stack.nonEmpty failed" }
     require(steps >= 1) { "steps >= 1 failed; with >${steps}<" }
 
-    val count = if(outOfBounds(stack, stackCounter)) steps
+    return if(outOfBounds(stack, stackCounter)) steps
       else {
-        println("${stack.size}/${stackCounter}/${steps}/${offset(stack[stackCounter])}")
-        stack[stackCounter] = offset(stack[stackCounter])
-        countSteps(stack, stackCounter + stack[stackCounter], steps + 1, offset)
+        val sc = stack[stackCounter]
+        stack[stackCounter] = offset(sc)
+        countSteps(stack, stackCounter + sc, steps + 1, offset)
       }
-    return count
   }
 
   object Part1 {
