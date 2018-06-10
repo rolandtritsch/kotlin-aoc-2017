@@ -3,7 +3,7 @@
 package aoc
 
 fun main(args: Array<String>): Unit {
-  //assert(args.size == 0, "args.size == 0 failed; with >${args.size}<")
+  require(args.size == 0) { "args.size == 0 failed; with >${args.size}<" }
 
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
   println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
@@ -14,7 +14,7 @@ fun main(args: Array<String>): Unit {
   println("Day04: Part1: countvalid -> ${Day04.Part1.solve(Day04.input)}")
   println("Day04: Part2: countvalid -> ${Day04.Part2.solve(Day04.input)}")
   println("Day05: Part1: countsteps -> ${Day05.Part1.solve(Day05.input)}")
-  println("Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input)}")
+  println("Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input2)}")
 /*
   println(s"Day06: Part1: cycles -> ${Day06.Part1.solve(Day06.input)}")
   println(s"Day06: Part2: cycles -> ${Day06.Part2.solve(Day06.input)}")
