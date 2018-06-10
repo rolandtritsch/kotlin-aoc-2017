@@ -10,7 +10,7 @@ class Day05Spec : ShouldSpec({
     }
 
     "solve part2" {
-      Day05.Part2.solve(Day05.input2) shouldBe 29629538
+      Day05.Part2.solve(Day05.input) shouldBe 29629538
     }
   }
 })

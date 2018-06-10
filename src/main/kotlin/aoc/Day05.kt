@@ -20,8 +20,7 @@ package aoc
   */
 object Day05 {
 
-  val input = Util.readInput("Day05input.txt").map { it.toInt() }.toMutableList()
-  val input2 = Util.readInput("Day05input.txt").map { it.toInt() }.toMutableList()
+  val input = Util.readInput("Day05input.txt").map { it.toInt() }
 
   fun outOfBounds(stack: MutableList<Int>, stackCounter: Int): Boolean {
     return stackCounter + stack[stackCounter] < 0 || stackCounter + stack[stackCounter] >= stack.size
@@ -41,11 +40,11 @@ object Day05 {
 
   object Part1 {
     fun offset(sc: Int) = sc + 1
-    fun solve(stack: MutableList<Int>) = countSteps(stack, 0, 1, Part1::offset)
+    fun solve(stack: List<Int>) = countSteps(stack.toMutableList(), 0, 1, Part1::offset)
   }
 
   object Part2 {
     fun offset(sc: Int) = if(sc >= 3) sc - 1 else sc + 1
-    fun solve(stack: MutableList<Int>) = countSteps(stack, 0, 1, Part2::offset)
+    fun solve(stack: List<Int>) = countSteps(stack.toMutableList(), 0, 1, Part2::offset)
   }
 }

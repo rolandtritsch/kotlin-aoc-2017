@@ -14,7 +14,7 @@ fun main(args: Array<String>): Unit {
   println("Day04: Part1: countvalid -> ${Day04.Part1.solve(Day04.input)}")
   println("Day04: Part2: countvalid -> ${Day04.Part2.solve(Day04.input)}")
   println("Day05: Part1: countsteps -> ${Day05.Part1.solve(Day05.input)}")
-  println("Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input2)}")
+  println("Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input)}")
 /*
   println(s"Day06: Part1: cycles -> ${Day06.Part1.solve(Day06.input)}")
   println(s"Day06: Part2: cycles -> ${Day06.Part2.solve(Day06.input)}")
