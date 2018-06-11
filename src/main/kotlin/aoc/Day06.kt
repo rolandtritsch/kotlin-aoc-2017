@@ -9,6 +9,8 @@ typealias MemoryBanks = MutableList<Int>
   * Part1 - Is lambda + mu.
   *
   * Part2 - Is just lambda.
+  *
+  * @see [[https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_Tortoise_and_Hare]]
   */
 object Day06 {
 
@@ -27,8 +29,6 @@ object Day06 {
     return cycledBanks
   }
 
-  /** @see [[https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_Tortoise_and_Hare]]
-    */
   fun floyd(banks: MemoryBanks, cycle: (MemoryBanks) -> MemoryBanks): Pair<Int, Int> {
     fun phase1(tortoise: MemoryBanks, hare: MemoryBanks): MemoryBanks {
       return if(tortoise == hare) hare
@@ -42,9 +42,7 @@ object Day06 {
         else phase2(cycle(tortoise), cycle(hare), mu + 1)
     }
 
-    val p2 = phase2(banks, hare, 0)
-    val tortoise = p2.first
-    val mu = p2.second
+    val (tortoise, mu) = phase2(banks, hare, 0)
 
     fun phase3(tortoise: MemoryBanks, hare: MemoryBanks, lambda: Int): Int {
       return if(tortoise == hare) lambda
@@ -58,17 +56,14 @@ object Day06 {
 
   object Part1 {
     fun solve(banks: List<Int>): Int {
-      val f = floyd(banks.toMutableList(), Day06::cycle)
-      val lambda = f.first
-      val mu = f.second
+      val (lambda, mu) = floyd(banks.toMutableList(), Day06::cycle)
       return lambda + mu
     }
   }
 
   object Part2 {
     fun solve(banks: List<Int>): Int {
-      val f = floyd(banks.toMutableList(), Day06::cycle)
-      val lambda = f.first
+      val (lambda, _) = floyd(banks.toMutableList(), Day06::cycle)
       return lambda
     }
   }
