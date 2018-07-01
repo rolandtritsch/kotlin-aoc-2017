@@ -91,7 +91,7 @@ object Day08 {
     assert(registers.isNotEmpty()) { "registers.nonEmpty" }
 
     return instructions.fold(mutableListOf(registers), { currentRegisters, i ->
-      currentRegisters.add(0, executeInstruction(i, currentRegisters.first()))
+      currentRegisters.add(0, executeInstruction(i, currentRegisters.first()).toMutableMap())
       currentRegisters
     }).toList()
   }
