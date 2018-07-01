@@ -8,10 +8,9 @@ class Day07Spec : ShouldSpec({
     "solve part1" {
       Day07.Part1.solve(Day07.input) shouldBe "uownj"
     }
-/*
+
     "solve part2" {
       Day07.Part2.solve(Day07.input) shouldBe 596
     }
-    */
   }
 })

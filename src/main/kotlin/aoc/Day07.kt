@@ -40,7 +40,7 @@ object Day07 {
   fun parseInput(lines: List<String>): List<ParseElement> {
     fun parseLine(line: String): ParseElement {
       // fwft (72) -> ktlj, cntj, xhth
-      val tokens = line.split("[ (),]")
+      val tokens = line.split(" ", "(", ")", ",")
       val name = tokens.get(0)
       val weight = tokens.get(2).toInt()
       val node = if(tokens.size > 3) {
