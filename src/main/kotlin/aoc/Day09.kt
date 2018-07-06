@@ -24,21 +24,23 @@ data class Statistics(val scores: List<Int> = emptyList<Int>(), val garbageCharC
   fun collectGarbage() = Statistics(scores, garbageCharCounter + 1)
 }
 
-sealed class State
-
-data class BadState(val level: Int = 0, val stats: Statistics = Statistics()): State() {
-  fun next(c: Char): State { assert(false); return BadState() }
+sealed class State(open val level: Int, open val stats: Statistics) {
+  abstract fun next(c: Char): State
 }
 
-data class OutOfGroup(val level: Int, val stats: Statistics): State() {
-  fun next(c: Char): State = when(c) {
+data class BadState(override val level: Int = 0, override val stats: Statistics = Statistics()): State(level, stats) {
+  override fun next(c: Char): State { assert(false); return BadState() }
+}
+
+data class OutOfGroup(override val level: Int, override val stats: Statistics): State(level, stats) {
+  override fun next(c: Char): State = when(c) {
     '{' -> InGroup(level + 1, stats)
     else -> { assert(false); BadState() }
   }
 }
 
-data class InGroup(val level: Int, val stats: Statistics): State() {
-  fun next(c: Char): State = when(c) {
+data class InGroup(override val level: Int, override val stats: Statistics): State(level, stats) {
+  override fun next(c: Char): State = when(c) {
     '{' -> InGroup(level + 1, stats)
     '}' -> if(level > 1) InGroup(level - 1, stats.collectScore(level)) else OutOfGroup(level - 1, stats.collectScore(level))
     '<' -> InGarbage(level, stats)
@@ -46,28 +48,29 @@ data class InGroup(val level: Int, val stats: Statistics): State() {
   }
 }
 
-data class InGarbage(val level: Int, val stats: Statistics): State() {
-  fun next(c: Char): State = when(c) {
+data class InGarbage(override val level: Int, override val stats: Statistics): State(level, stats) {
+  override fun next(c: Char): State = when(c) {
     '!' -> InCanceled(level, stats)
     '>' -> InGroup(level, stats)
     else -> InGarbage(level, stats.collectGarbage())
   }
 }
 
-data class InCanceled(val level: Int, val stats: Statistics): State() {
-  fun next(c: Char) = InGarbage(level, stats)
+data class InCanceled(override val level: Int, override val stats: Statistics): State(level, stats) {
+  override fun next(c: Char) = InGarbage(level, stats)
 }
 
 object Day09 {
 
   val input = Util.readInput("Day09input.txt").first().toList()
 
+
   data class StateMachine(val stream: List<Char>) {
     fun run() = stream.fold(OutOfGroup(0, Statistics()) as State, { currentState, c -> currentState.next(c) })
   }
-/*
+
   object Part1 {
-    fun solve(input: List[Char]): Int = {
+    fun solve(input: List<Char>): Int {
       val finalState = StateMachine(input).run()
       assert(finalState is OutOfGroup) { "finalState.isInstanceOf[OutOfGroup] failed" }
       return finalState.stats.scores.sum()
@@ -75,11 +78,10 @@ object Day09 {
   }
 
   object Part2 {
-    def solve(input: List[Char]): Int = {
+    fun solve(input: List<Char>): Int {
       val finalState = StateMachine(input).run()
       assert(finalState is OutOfGroup) { "finalState.isInstanceOf[OutOfGroup] failed" }
       return finalState.stats.garbageCharCounter
     }
   }
-*/
 }
