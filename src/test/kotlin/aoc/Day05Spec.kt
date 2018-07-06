@@ -1,4 +1,4 @@
-package aoc
+package aoc.day05
 
 import io.kotlintest.*
 import io.kotlintest.specs.ShouldSpec

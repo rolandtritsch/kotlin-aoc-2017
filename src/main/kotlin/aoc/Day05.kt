@@ -1,4 +1,4 @@
-package aoc
+package aoc.day05
 
 /** Problem: [[https://adventofcode.com/2017/day/5]]
   *
@@ -20,7 +20,7 @@ package aoc
   */
 object Day05 {
 
-  val input = Util.readInput("Day05input.txt").map { it.toInt() }
+  val input = aoc.Util.readInput("Day05input.txt").map { it.toInt() }
 
   fun outOfBounds(stack: MutableList<Int>, stackCounter: Int): Boolean {
     return stackCounter + stack[stackCounter] < 0 || stackCounter + stack[stackCounter] >= stack.size

@@ -2,6 +2,16 @@
 
 package aoc
 
+import aoc.day01.Day01
+import aoc.day02.Day02
+import aoc.day03.Day03
+import aoc.day04.Day04
+import aoc.day05.Day05
+import aoc.day06.Day06
+import aoc.day07.Day07
+import aoc.day08.Day08
+import aoc.day09.Day09
+
 fun main(args: Array<String>): Unit {
   require(args.size == 0) { "args.size == 0 failed; with >${args.size}<" }
 
@@ -17,13 +27,13 @@ fun main(args: Array<String>): Unit {
   println("Day05: Part2: countsteps -> ${Day05.Part2.solve(Day05.input)}")
   println("Day06: Part1: cycles -> ${Day06.Part1.solve(Day06.input)}")
   println("Day06: Part2: cycles -> ${Day06.Part2.solve(Day06.input)}")
+  println("Day07: Part1: findroot -> ${Day07.Part1.solve(Day07.input)}")
+  println("Day07: Part2: correctweight -> ${Day07.Part2.solve(Day07.input)}")
+  println("Day08: Part1: maxregister -> ${Day08.Part1.solve(Day08.input)}")
+  println("Day08: Part2: maxregisters -> ${Day08.Part2.solve(Day08.input)}")
+  println("Day09: Part1: score -> ${Day09.Part1.solve(Day09.input)}")
+  println("Day09: Part2: chars -> ${Day09.Part2.solve(Day09.input)}")
 /*
-  println(s"Day07: Part1: findroot -> ${Day07.Part1.solve(Day07.input)}")
-  println(s"Day07: Part2: correctweight -> ${Day07.Part2.solve(Day07.input)}")
-  println(s"Day08: Part1: maxregister -> ${Day08.Part1.solve(Day08.input)}")
-  println(s"Day08: Part2: maxregisters -> ${Day08.Part2.solve(Day08.input)}")
-  println(s"Day09: Part1: score -> ${Day09.Part1.solve(Day09.input)}")
-  println(s"Day09: Part2: chars -> ${Day09.Part2.solve(Day09.input)}")
   println(s"Day10: Part1: knot -> ${Day10.Part1.solve(Day10.input)}")
   println(s"Day10: Part2: hash -> ${Day10.Part2.solve(Day10.input)}")
   println(s"Day11: Part1: steps -> ${Day11.Part1.solve(Day11.input)}")

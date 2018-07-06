@@ -1,4 +1,4 @@
-package aoc
+package aoc.day08
 
 /** Problem: [[https://adventofcode.com/2017/day/8]]
   *
@@ -26,7 +26,7 @@ data class Instruction(
 
 object Day08 {
 
-  val input = Util.readInput("Day08input.txt")
+  val input = aoc.Util.readInput("Day08input.txt")
 
   fun parseInput(lines: List<String>): List<Instruction> {
     fun parseLine(line: String): Instruction {

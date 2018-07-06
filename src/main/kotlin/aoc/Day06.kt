@@ -1,4 +1,4 @@
-package aoc
+package aoc.day06
 
 typealias MemoryBanks = List<Int>
 
@@ -14,7 +14,7 @@ typealias MemoryBanks = List<Int>
   */
 object Day06 {
 
-  val input = Util.readInput("Day06input.txt").first().split('\t').map { it.toInt() }.toList()
+  val input = aoc.Util.readInput("Day06input.txt").first().split('\t').map { it.toInt() }.toList()
 
   fun <T> List<T>.updated(n: Int, v: T): List<T> {
     val l = this.toMutableList()

@@ -1,4 +1,4 @@
-package aoc
+package aoc.day01
 
 /** Problem: [[https://adventofcode.com/2017/day/1]]
   *
@@ -16,7 +16,7 @@ package aoc
   */
 object Day01 {
 
-  val input = Util.readInput("Day01input.txt").first()
+  val input = aoc.Util.readInput("Day01input.txt").first()
 
   fun captcha(digits: String, offset: Int): Int {
     require(offset <= digits.length) { "offset <= digits.length failed; with >${offset}< >${digits.length}<" }

@@ -1,4 +1,4 @@
-package aoc
+package aoc.day04
 
 typealias PassPhrase = List<String>
 
@@ -23,7 +23,7 @@ typealias PassPhrase = List<String>
   */
 object Day04 {
 
-  val input = Util.readInput("Day04input.txt").map { it.split(' ').toList() }
+  val input = aoc.Util.readInput("Day04input.txt").map { it.split(' ').toList() }
 
   fun isValid(words: PassPhrase): Boolean {
     require(words.size > 0) { "words.nonEmpty failed" }

@@ -1,4 +1,4 @@
-package aoc
+package aoc.day09
 
 /** Problem: [[https://adventofcode.com/2017/day/9]]
   *
@@ -62,8 +62,7 @@ data class InCanceled(override val level: Int, override val stats: Statistics): 
 
 object Day09 {
 
-  val input = Util.readInput("Day09input.txt").first().toList()
-
+  val input = aoc.Util.readInput("Day09input.txt").first().toList()
 
   data class StateMachine(val stream: List<Char>) {
     fun run() = stream.fold(OutOfGroup(0, Statistics()) as State, { currentState, c -> currentState.next(c) })

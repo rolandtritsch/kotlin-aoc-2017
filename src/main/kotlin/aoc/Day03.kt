@@ -1,4 +1,4 @@
-package aoc
+package aoc.day03
 
 data class Move(val x: Int, val y: Int)
 typealias Moves = List<List<Move>>
@@ -38,7 +38,7 @@ typealias Moves = List<List<Move>>
 
 object Day03 {
 
-  val input = Util.readInput("Day03input.txt").first().toInt()
+  val input = aoc.Util.readInput("Day03input.txt").first().toInt()
 
   object Advance {
     val up = Move(-1, 0)

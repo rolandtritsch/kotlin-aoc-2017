@@ -1,4 +1,4 @@
-package aoc
+package aoc.day02
 
 /** Problem: [[https://adventofcode.com/2017/day/2]]
   *
@@ -15,7 +15,7 @@ package aoc
   */
 object Day02 {
 
-  val input = Util.readInput("Day02input.txt").map { it.split('\t') }.map { line -> line.map { it.toInt() }}
+  val input = aoc.Util.readInput("Day02input.txt").map { it.split('\t') }.map { line -> line.map { it.toInt() }}
 
   fun checksum(spreadSheet: List<List<Int>>, processRow: (List<List<Int>>) -> List<Int>): Int {
     require(spreadSheet.size > 0) { "spreadSheet.nonEmpty failed" }
