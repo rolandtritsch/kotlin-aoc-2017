@@ -27,7 +27,7 @@ object Day05 {
   }
 
   tailrec fun countSteps(stack: MutableList<Int>, stackCounter: Int, steps: Int, offset: (Int) -> Int): Int {
-    require(stack.size > 0) { "stack.nonEmpty failed" }
+    require(stack.isNotEmpty()) { "stack.nonEmpty failed" }
     require(steps >= 1) { "steps >= 1 failed; with >${steps}<" }
 
     return if(outOfBounds(stack, stackCounter)) steps

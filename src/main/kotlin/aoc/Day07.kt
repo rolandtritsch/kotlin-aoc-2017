@@ -63,7 +63,7 @@ object Day07 {
     }
 
     fun findRoot(pnodes: List<ParseElement>): String {
-      assert(pnodes.isNotEmpty()) { "pnodes.nonEmpty failed" }
+      require(pnodes.isNotEmpty()) { "pnodes.isNotEmpty() failed" }
 
       val allNames = pnodes.map { it.name }
       val allChildrenNames = collectAllChildrenNames(pnodes)
@@ -76,9 +76,9 @@ object Day07 {
     } //ensuring(!pnodes.collect {case n: ParseNode => n.children}.flatten.contains(_), s"!pnodes.collect {case n: ParseNode => n.children}.flatten.contains(_) failed")
 
     fun build(name: String, pnodes: List<ParseElement>): Element {
-      assert(name.isNotEmpty()) { "name.nonEmpty failed" }
-      assert(pnodes.isNotEmpty()) { "pnodes.nonEmpty failed" }
-      assert(pnodes.map { it.name }.contains(name)) { "pnodes.map(_.name).contains(name) failed" }
+      require(name.isNotEmpty()) { "name.nonEmpty failed" }
+      require(pnodes.isNotEmpty()) { "pnodes.nonEmpty failed" }
+      require(pnodes.map { it.name }.contains(name)) { "pnodes.map(_.name).contains(name) failed" }
 
       val pn = pnodes.find { it.name == name }!!
       val e = when(pn) {

@@ -13,7 +13,7 @@ import aoc.day08.Day08
 import aoc.day09.Day09
 
 fun main(args: Array<String>): Unit {
-  require(args.size == 0) { "args.size == 0 failed; with >${args.size}<" }
+  require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
 
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
   println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")

@@ -65,7 +65,7 @@ object Day09 {
   val input = aoc.Util.readInput("Day09input.txt").first().toList()
 
   data class StateMachine(val stream: List<Char>) {
-    fun run() = stream.fold(OutOfGroup(0, Statistics()) as State, { currentState, c -> currentState.next(c) })
+    fun run(): State = stream.fold(OutOfGroup(0, Statistics()) as State, { currentState, c -> currentState.next(c) })
   }
 
   object Part1 {

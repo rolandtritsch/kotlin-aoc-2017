@@ -18,8 +18,8 @@ object Day02 {
   val input = aoc.Util.readInput("Day02input.txt").map { it.split('\t') }.map { line -> line.map { it.toInt() }}
 
   fun checksum(spreadSheet: List<List<Int>>, processRow: (List<List<Int>>) -> List<Int>): Int {
-    require(spreadSheet.size > 0) { "spreadSheet.nonEmpty failed" }
-    require(spreadSheet.all { it.size > 0 }) { "spreadSheet.forall(_.nonEmpty) failed" }
+    require(spreadSheet.isNotEmpty()) { "spreadSheet.nonEmpty failed" }
+    require(spreadSheet.all { it.isNotEmpty() }) { "spreadSheet.forall(_.nonEmpty) failed" }
 
     return processRow(spreadSheet).sum()
   }

@@ -30,7 +30,7 @@ object Day01 {
 
   object Part1 {
     fun solve(input: String): Int {
-      require(input.length > 0) { "input.nonEmpty failed" }
+      require(input.isNotEmpty()) { "input.nonEmpty failed" }
       require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
 
       val captcha = Day01.captcha(input, 1)
@@ -40,7 +40,7 @@ object Day01 {
 
   object Part2 {
     fun solve(input: String): Int {
-      require(input.length > 0) { "input.nonEmpty failed" }
+      require(input.isNotEmpty()) { "input.nonEmpty failed" }
       require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
       require(input.length % 2 == 0) { "input.length % 2 == 0 failed" }
 

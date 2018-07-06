@@ -26,7 +26,7 @@ object Day04 {
   val input = aoc.Util.readInput("Day04input.txt").map { it.split(' ').toList() }
 
   fun isValid(words: PassPhrase): Boolean {
-    require(words.size > 0) { "words.nonEmpty failed" }
+    require(words.isNotEmpty()) { "words.nonEmpty failed" }
 
     val groupByWords = words.groupBy { it }
     val countByWords = groupByWords.map { it.key to it.value.size }
@@ -35,7 +35,7 @@ object Day04 {
   }
 
   fun countValid(passPhrases: List<PassPhrase>): Int {
-    require(passPhrases.size > 0) { "passPhrases.nonEmpty" }
+    require(passPhrases.isNotEmpty()) { "passPhrases.nonEmpty" }
 
     val valid = passPhrases.count { isValid(it) }
     assert(valid >= 0) { "valid >= 0 failed" }

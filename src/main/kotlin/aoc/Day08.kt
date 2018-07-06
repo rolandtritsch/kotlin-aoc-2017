@@ -55,12 +55,12 @@ object Day08 {
   }
 
   fun buildRegisters(instructions: List<Instruction>): MutableMap<String, Int> {
-    assert(instructions.isNotEmpty()) { "instructions.nonEmpty failed" }
+    require(instructions.isNotEmpty()) { "instructions.isNonEmpty() failed" }
     return instructions.map { it.register to 0 }.toMap().toMutableMap()
   } // ensuring(_.nonEmpty, s"_.nonEmpty failed")
 
   fun evalCondition(i: Instruction, registers: MutableMap<String, Int>): Boolean {
-    assert(listOf("==", "!=", "<", ">", "<=", ">=").contains(i.condition)) { "List(conditions).contains(i.condition) failed; with >${i.condition}<" }
+    require(listOf("==", "!=", "<", ">", "<=", ">=").contains(i.condition)) { "List(conditions).contains(i.condition) failed; with >${i.condition}<" }
 
     return when(i.condition) {
       "==" -> if(registers.get(i.conditionRegister)!! == i.conditionOperand) true else false
@@ -74,7 +74,7 @@ object Day08 {
   }
 
   fun executeInstruction(i: Instruction, registers: MutableMap<String, Int>): MutableMap<String, Int> {
-    assert(listOf("inc", "dec").contains(i.operation)) { "List(operations).contains(i.operation) failed; with >${i.operation}<" }
+    require(listOf("inc", "dec").contains(i.operation)) { "List(operations).contains(i.operation) failed; with >${i.operation}<" }
 
     val value = if(evalCondition(i, registers)) when(i.operation) {
       "inc" -> registers.get(i.register)!! + i.operand
@@ -87,8 +87,8 @@ object Day08 {
   }
 
   fun runProgram(instructions: List<Instruction>, registers: MutableMap<String, Int>): List<MutableMap<String, Int>> {
-    assert(instructions.isNotEmpty()) { "instructions.nonEmpty" }
-    assert(registers.isNotEmpty()) { "registers.nonEmpty" }
+    require(instructions.isNotEmpty()) { "instructions.nonEmpty" }
+    require(registers.isNotEmpty()) { "registers.nonEmpty" }
 
     return instructions.fold(mutableListOf(registers), { currentRegisters, i ->
       currentRegisters.add(0, executeInstruction(i, currentRegisters.first()).toMutableMap())

@@ -56,8 +56,8 @@ object Day03 {
   )
 
   fun nextLevelMoves(currentLevelMoves: Moves): Moves  {
-    require(currentLevelMoves.size > 0) { "currentLevelMoves.nonEmpty failed" }
-    require(currentLevelMoves.all { it.size > 0 }) { "currentLevelMoves.all(it.nonEmpty) failed" }
+    require(currentLevelMoves.isNotEmpty()) { "currentLevelMoves.nonEmpty failed" }
+    require(currentLevelMoves.all { it.isNotEmpty() }) { "currentLevelMoves.all(it.nonEmpty) failed" }
 
     val moves = listOf(
       currentLevelMoves.get(0),
@@ -152,7 +152,7 @@ object Day03 {
     }
 
     fun calcValue(currentCoordinates: Pair<Int, Int>, valuesSoFar: Map<Pair<Int, Int>, Int>): Int {
-      require(valuesSoFar.size > 0) { "valuesSoFar.nonEmpty failed" }
+      require(valuesSoFar.isNotEmpty()) { "valuesSoFar.nonEmpty failed" }
 
       val x = currentCoordinates.first
       val y = currentCoordinates.second
