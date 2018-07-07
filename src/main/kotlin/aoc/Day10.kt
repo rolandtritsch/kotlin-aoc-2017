@@ -1,4 +1,4 @@
-package aoc
+package aoc.day10
 
 /** Problem: [[https://adventofcode.com/2017/day/10]]
   *
@@ -14,91 +14,89 @@ package aoc
   */
 object Day10 {
 
-  val input = Util.readInput("Day10input.txt").head.filterNot(_.isWhitespace)
+  val input = aoc.Util.readInput("Day10input.txt").first().filterNot { it.isWhitespace() }
 
-  def shiftLeft(hash: List[Int], times: Int): List[Int] = {
-    require(hash.nonEmpty, s"hash.nonEmpty failed; with >${hash}<")
-    require(times >= 0, s"times >= 0 failed; with >${times}<")
+  fun shiftLeft(hash: List<Int>, times: Int): List<Int> {
+    require(hash.isNotEmpty()) { "hash.nonEmpty failed" }
+    require(times >= 0) { "times >= 0 failed; with >${times}<" }
 
-    def shiftLeftOnce(hash: List[Int]): List[Int] = hash match {
-      case head :: rest => rest ++ List(head)
-      case Nil => hash
-    }
+    fun shiftLeftOnce(hash: List<Int>): List<Int> = hash.drop(1) + hash.first()
 
-    if (times == 0) hash
+    return if(times == 0) hash
     else shiftLeft(shiftLeftOnce(hash), times - 1)
   }
 
-  def shiftRight(hash: List[Int], times: Int): List[Int] = {
-    shiftLeft(hash, hash.size - times)
+  fun shiftRight(hash: List<Int>, times: Int): List<Int> {
+    return shiftLeft(hash, hash.size - times)
   }
 
-  def reverse(hash: List[Int], length: Int): List[Int] = {
-    require(hash.nonEmpty, s"hash.nonEmpty failed; with >${hash}<")
-    require(length >= 0 && length <= hash.size, s"length >= 0 && length <= hash.size failed; with >${length}<")
+  fun reverse(hash: List<Int>, length: Int): List<Int> {
+    require(hash.isNotEmpty()) { "hash.nonEmpty failed" }
+    require(length >= 0 && length <= hash.size) { "length >= 0 && length <= hash.size failed; with >${length}<" }
 
-    val (front, end) = hash.splitAt(length)
-    front.reverse ++ end
+    val front = hash.slice(0..length)
+    val end = hash.slice((length + 1)..hash.size)
+    return front.reversed() + end
   }
 
-  case class Hash(hash: List[Int], position: Int, skip: Int) {
-    def next(length: Int): Hash = {
+  data class Hash(val hash: List<Int>, val position: Int, val skip: Int) {
+    fun next(length: Int): Hash {
       val nextHash = shiftRight(reverse(shiftLeft(hash, position), length), position)
       val nextPosition = (position + length + skip) % hash.size
       val nextSkip = skip + 1
-      Hash(nextHash, nextPosition, nextSkip)
+      return Hash(nextHash, nextPosition, nextSkip)
     }
   }
 
-  def input2Lengths(input: String): List[Int] = {
-    input.split(',').map(_.toInt).toList
+  fun input2Lengths(input: String): List<Int> {
+    return input.split(",").map { it.toInt() }.toList()
   }
 
-  val seed = Hash(List.range(0, 256), 0, 0)
-  def knot(lengths: List[Int], seed: Hash): Hash = {
-    lengths.foldLeft(seed)((currentHash, length) => currentHash.next(length))
+  val seed = Hash((0..256).toList(), 0, 0)
+  fun knot(lengths: List<Int>, seed: Hash): Hash {
+    return lengths.fold(seed, { currentHash, length -> currentHash.next(length) })
   }
 
   object Part1 {
-    def solve(input: String): Int = {
+    fun solve(input: String): Int {
       val hash = knot(input2Lengths(input), seed).hash
-      hash(0) * hash(1)
+      return hash.get(0) * hash.get(1)
     }
   }
 
-  val suffix = List(17, 31, 73, 47, 23)
-  def encode(input: String, suffix: List[Int]): List[Int] = {
-    input.map(_.toInt).toList ++ suffix
+  val suffix = listOf(17, 31, 73, 47, 23)
+  fun encode(input: String, suffix: List<Int>): List<Int> {
+    return input.map { it.toInt() }.toList() + suffix
   }
 
   val rounds = 64
-  def sparse(lengths: List[Int], seed: Hash, rounds: Int): Hash = {
-    require(rounds >= 1, s"rounds >= 1 failed; with >${rounds}<")
+  fun sparse(lengths: List<Int>, seed: Hash, rounds: Int): Hash {
+    require(rounds >= 1) { "rounds >= 1 failed; with >${rounds}<" }
 
-    if(rounds == 1) knot(lengths, seed)
+    return if(rounds == 1) knot(lengths, seed)
     else sparse(lengths, knot(lengths, seed), rounds - 1)
-  } ensuring(_.hash.forall(n => n >= 0 && n < 256))
+  } //ensuring(_.hash.forall(n => n >= 0 && n < 256))
 
-  def xorHashSlice(slice: List[Int]): Int = {
-    slice.foldLeft(0)((acc, i) => acc ^ i)
+  fun xorHashSlice(slice: List<Int>): Int {
+    return slice.fold(0, { acc, i -> acc xor i })
   }
 
   val sliceSize = 16
-  def dense(hash: List[Int]): List[Int] = {
-    require(hash.size % sliceSize == 0, s"hash.size % sliceSize == 0 failed; with >${hash.size}<")
-    require(hash.forall(n => n >= 0 && n < hash.size), s"hash.forall(n => n >= 0 && n < hash.size) failed")
+  fun dense(hash: List<Int>): List<Int> {
+    require(hash.size % sliceSize == 0) { "hash.size % sliceSize == 0 failed; with >${hash.size}<" }
+    require(hash.all { n -> n >= 0 && n < hash.size }) { "hash.forall(n => n >= 0 && n < hash.size) failed" }
 
-    val hashSlices = hash.grouped(sliceSize).toList
-    hashSlices.map(xorHashSlice(_))
-  } ensuring(result => result.size == hash.size / sliceSize)
+    val hashSlices = hash.chunked(sliceSize).toList()
+    return hashSlices.map { xorHashSlice(it) }
+  } //ensuring(result => result.size == hash.size / sliceSize)
 
-  def dense2hex(hash: List[Int]): String = {
-    hash.foldLeft(List.empty[String])((acc, i) => acc :+ f"${i}%02x").mkString
+  fun dense2hex(hash: List<Int>): String {
+    return hash.fold(emptyList<String>(), { acc, i -> (acc :+ "${i}%02x").joinToString() })
   }
 
   object Part2 {
-    def solve(input: String): String = {
-      dense2hex(dense(sparse(encode(input, suffix), seed, rounds).hash))
+    fun solve(input: String): String {
+      return dense2hex(dense(sparse(encode(input, suffix), seed, rounds).hash))
     }
   }
 }
