@@ -11,6 +11,7 @@ import aoc.day06.Day06
 import aoc.day07.Day07
 import aoc.day08.Day08
 import aoc.day09.Day09
+import aoc.day10.Day10
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
@@ -33,9 +34,9 @@ fun main(args: Array<String>): Unit {
   println("Day08: Part2: maxregisters -> ${Day08.Part2.solve(Day08.input)}")
   println("Day09: Part1: score -> ${Day09.Part1.solve(Day09.input)}")
   println("Day09: Part2: chars -> ${Day09.Part2.solve(Day09.input)}")
+  println("Day10: Part1: knot -> ${Day10.Part1.solve(Day10.input)}")
+  println("Day10: Part2: hash -> ${Day10.Part2.solve(Day10.input)}")
 /*
-  println(s"Day10: Part1: knot -> ${Day10.Part1.solve(Day10.input)}")
-  println(s"Day10: Part2: hash -> ${Day10.Part2.solve(Day10.input)}")
   println(s"Day11: Part1: steps -> ${Day11.Part1.solve(Day11.input)}")
   println(s"Day11: Part2: max -> ${Day11.Part2.solve(Day11.input)}")
   println(s"Day12: Part1: programs -> ${Day12.Part1.solve(Day12.input)}")
