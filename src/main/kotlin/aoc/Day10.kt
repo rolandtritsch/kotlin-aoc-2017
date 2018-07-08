@@ -32,10 +32,10 @@ object Day10 {
 
   fun reverse(hash: List<Int>, length: Int): List<Int> {
     require(hash.isNotEmpty()) { "hash.nonEmpty failed" }
-    require(length >= 0 && length <= hash.size) { "length >= 0 && length <= hash.size failed; with >${length}<" }
+    require(length >= 0 && length < hash.size - 1) { "length >= 0 && length <= hash.size failed; with >${length}<" }
 
     val front = hash.slice(0..length)
-    val end = hash.slice((length + 1)..hash.size)
+    val end = hash.slice(length + 1..hash.size - 1)
     return front.reversed() + end
   }
 
@@ -91,7 +91,7 @@ object Day10 {
   } //ensuring(result => result.size == hash.size / sliceSize)
 
   fun dense2hex(hash: List<Int>): String {
-    return hash.fold(emptyList<String>(), { acc, i -> (acc :+ "${i}%02x").joinToString() })
+    return hash.fold(emptyList<String>(), { acc, i -> acc + listOf("%02x".format(i)) }).joinToString()
   }
 
   object Part2 {
