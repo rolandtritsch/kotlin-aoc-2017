@@ -1,4 +1,4 @@
-package aoc
+package aoc.day11
 
 /** Problem: [[https://adventofcode.com/2017/day/11]]
   *
@@ -17,43 +17,39 @@ package aoc
   */
 object Day11 {
 
-  val input = Util.readInput("Day11input.txt").head.split(',').toList
+  val input = aoc.Util.readInput("Day11input.txt").first().split(",").toList()
 
-  case class Tile(x: Int, y: Int, z: Int) {
-    def distance(that: Tile): Int = {
-      (Math.abs(this.x - that.x) + Math.abs(this.y - that.y) + Math.abs(this.z - that.z)) / 2
+  data class Tile(val x: Int, val y: Int, val z: Int) {
+    fun distance(that: Tile): Int {
+      return (Math.abs(this.x - that.x) + Math.abs(this.y - that.y) + Math.abs(this.z - that.z)) / 2
     }
   }
 
   /** @see [[https://stackoverflow.com/a/47749887/2374327]]
     */
-  def calcSteps(path: List[String]): (Int, Int) = {
+  fun calcSteps(path: List<String>): Pair<Int, Int> {
     val centerTile = Tile(0, 0, 0)
-    val (finalTile, finalMax) = path.foldLeft(centerTile, 0)((current, move) => {
+    val (finalTile, finalMax) = path.fold(Pair(centerTile, 0), { current, move ->
       val (currentTile, currentMax) = current
-      val nextTile = move match {
-        case "n" => Tile(currentTile.x, currentTile.y + 1, currentTile.z - 1)
-        case "ne" => Tile(currentTile.x + 1, currentTile.y, currentTile.z - 1)
-        case "nw" => Tile(currentTile.x - 1 , currentTile.y + 1, currentTile.z)
-        case "s" => Tile(currentTile.x, currentTile.y - 1, currentTile.z + 1)
-        case "se" => Tile(currentTile.x + 1, currentTile.y - 1, currentTile.z)
-        case "sw" => Tile(currentTile.x - 1, currentTile.y, currentTile.z + 1)
-        case _ => {assert(false); Tile(0, 0, 0)}
+      val nextTile = when(move) {
+        "n" -> Tile(currentTile.x, currentTile.y + 1, currentTile.z - 1)
+        "ne" -> Tile(currentTile.x + 1, currentTile.y, currentTile.z - 1)
+        "nw" -> Tile(currentTile.x - 1 , currentTile.y + 1, currentTile.z)
+        "s" -> Tile(currentTile.x, currentTile.y - 1, currentTile.z + 1)
+        "se" -> Tile(currentTile.x + 1, currentTile.y - 1, currentTile.z)
+        "sw" -> Tile(currentTile.x - 1, currentTile.y, currentTile.z + 1)
+        else -> {assert(false); Tile(0, 0, 0)}
       }
-      (nextTile, Math.max(currentMax, centerTile.distance(nextTile)))
+      Pair(nextTile, Math.max(currentMax, centerTile.distance(nextTile)))
     })
-    (centerTile.distance(finalTile), finalMax)
-  } ensuring(result => result._1 >= 0 && result._2 >= result._1)
+    return Pair(centerTile.distance(finalTile), finalMax)
+  } //ensuring(result => result._1 >= 0 && result._2 >= result._1)
 
   object Part1 {
-    def solve(input: List[String]): Int = {
-      calcSteps(input)._1
-    }
+    fun solve(input: List<String>): Int = calcSteps(input).first
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      calcSteps(input)._2
-    }
+    fun solve(input: List<String>): Int = calcSteps(input).second
   }
 }
