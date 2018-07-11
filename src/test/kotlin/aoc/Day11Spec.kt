@@ -1,29 +1,16 @@
-package aoc
+package aoc.day11
 
-import org.scalatest.{FlatSpec, Matchers}
+import io.kotlintest.*
+import io.kotlintest.specs.ShouldSpec
 
-class Day11Spec extends FlatSpec with Matchers {
+class Day11Spec : ShouldSpec({
 
-  behavior of "readInput()"
-  it should "return the (beginning) of the input" in {
-    Day11.input.take(5) should be (List("nw", "n", "n", "se", "ne"))
+  "solve()" should {
+    "part1" {
+      Day11.Part1.solve(Day11.input) shouldBe 810
+    }
+    "part2" {
+      Day11.Part2.solve(Day11.input) shouldBe 1567
+    }
   }
-
-  behavior of "calcSteps()"
-  it should "solve the testcase(s)" in {
-    Day11.calcSteps(List("ne", "ne", "ne")) shouldBe (3, 3)
-    Day11.calcSteps(List("ne", "ne", "sw", "sw")) shouldBe (0, 2)
-    Day11.calcSteps(List("ne", "ne", "s", "s")) shouldBe (2, 2)
-    Day11.calcSteps(List("se", "sw", "se", "sw", "sw")) shouldBe (3, 3)
-  }
-
-  behavior of "solve() - Part1"
-  it should "solve the puzzle" taggedAs(SolutionTest, BuildTest) in {
-    Day11.Part1.solve(Day11.input) shouldBe 810
-  }
-
-  behavior of "solve() - Part2"
-  it should "solve the puzzle" taggedAs(SolutionTest, BuildTest) in {
-    Day11.Part2.solve(Day11.input) shouldBe 1567
-  }
-}
+})
