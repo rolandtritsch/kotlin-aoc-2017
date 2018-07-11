@@ -1,4 +1,6 @@
-package aoc
+package aoc.day12
+
+typealias Pipes = Map<Int, List<Int>>
 
 /** Problem: [[https://adventofcode.com/2017/day/12]]
   *
@@ -23,52 +25,43 @@ package aoc
   */
 object Day12 {
 
-  val input = Util.readInput("Day12input.txt")
+  val input = aoc.Util.readInput("Day12input.txt")
 
-  def parseInput(in: List[String]): Map[Int, List[Int]] = {
-    in.map(line => {
-      val tokens = line.split("[ ,]")
-      val from = tokens(0).toInt
-      val to = (for(i <- 2 until tokens.size by 2) yield tokens(i).toInt).toList
-      from -> to
-    }).toMap
-  }
+  fun parseInput(input: List<String>): Pipes = input.map { line ->
+    val tokens = line.split(" ", ",")
+    val source = tokens.get(0).toInt()
+    val sink = (2..tokens.size step 2).map { i -> tokens.get(i).toInt() }.toList()
+    source to sink
+  }.toMap()
 
-  type Pipes = Map[Int, List[Int]]
-
-  def findPrograms(start: Int, graph: Pipes): List[Int] = {
-    def go(node: Int, graph: Pipes, seenAlready: List[Int]): List[Int] = {
+  fun findPrograms(start: Int, graph: Pipes): List<Int> {
+    fun go(node: Int, graph: Pipes, seenAlready: List<Int>): List<Int> =
       if(seenAlready.contains(node)) seenAlready
       else {
-        val nodes = graph(node)
-        nodes.foldLeft(node :: seenAlready)((seen: List[Int], n: Int) => go(n, graph, seen))
+        val nodes = graph.get(node)!!
+        nodes.fold(seenAlready + node, { seen, n -> go(n, graph, seen) })
       }
-    }
-    go(start, graph, List.empty[Int])
+    return go(start, graph, emptyList<Int>())
   }
 
-  def findGroups(graph: Pipes): List[List[Int]] = {
-    def go(nodes: List[Int], graph: Pipes, groups: List[List[Int]]): List[List[Int]] = {
-      if(nodes.isEmpty) groups
+  fun findGroups(graph: Pipes): List<List<Int>> {
+    fun go(nodes: List<Int>, graph: Pipes, groups: List<List<Int>>): List<List<Int>> =
+      if(nodes.isEmpty()) groups
       else {
-        val nextGroup = findPrograms(nodes.head, graph)
-        go(nodes.diff(nextGroup), graph, nextGroup :: groups)
+        val nextGroup = findPrograms(nodes.first(), graph)
+        go(nodes.minus(nextGroup), graph, groups.plus(listOf(nextGroup)))
       }
-    }
-    val nodes = graph.keys.toList
+
+    val nodes = graph.keys.toList()
     val groupZero = findPrograms(0, graph)
-    go(nodes.diff(groupZero), graph, List(groupZero))
+    return go(nodes.minus(groupZero), graph, listOf(groupZero))
   }
 
   object Part1 {
-    def solve(input: List[String]): Int = {
-      findPrograms(0, parseInput(input)).size
-    }
+    fun solve(input: List<String>): Int = findPrograms(0, parseInput(input)).size
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      findGroups(parseInput(input)).size
-    }
+    fun solve(input: List<String>): Int = findGroups(parseInput(input)).size
   }
 }
