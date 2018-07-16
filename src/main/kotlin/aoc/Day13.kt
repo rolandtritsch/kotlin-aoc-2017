@@ -1,4 +1,4 @@
-package aoc
+package aoc.day13
 
 /** Problem: [[http://adventofcode.com/2017/day/13]]
   *
@@ -19,31 +19,34 @@ package aoc
   */
 object Day13 {
 
-  val input = Util.readInput("Day13input.txt")
+  val input = aoc.Util.readInput("Day13input.txt")
 
-  def parseInput(lines: List[String]): Map[Int, Int] = {
-    require(lines.nonEmpty, s"lines.nonEmpty failed")
+  fun parseInput(lines: List<String>): Map<Int, Int> {
+    require(lines.isNotEmpty()) { "lines.nonEmpty failed" }
 
-    lines.map(l => {
-      val tokens = l.split("[ :]")
-      val depth = tokens(0).toInt
-      val range = tokens(2).toInt
-      (depth, range)
-    }).toMap
+    return lines.map { l ->
+      val tokens = l.split(" ", ":")
+      val depth = tokens.get(0).toInt()
+      val range = tokens.get(2).toInt()
+      depth to range
+    }.toMap()
   }
 
-  def buildFw(input: Map[Int, Int]): List[(Int, Int)] = {
-    require(input.nonEmpty, s"input.nonEmpty failed")
+  fun buildFw(input: Map<Int, Int>): List<Pair<Int, Int>> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-    (for {
-      d <- 0 to input.keys.max
-      r = input.getOrElse(d, 0)
-    } yield (d, r)).toList.sorted
-  } ensuring(result => result.size == input.keys.max + 1)
+    val keys = 0..input.keys.max()!!
+    val pairs = keys.map { k ->
+      val v = input.get(k) ?: 0
+      Pair (k, v)
+    }
 
-  def threatDetected(depth: Int, range: Int): Boolean = {
-    require(depth >= 0, s"depth >= 0 failed; with >${depth}<")
-    require(range >= 0, s"range >= 0 failed; with >${range}<")
+    return pairs.toList().sortedWith(compareBy({ it.first }, { it.second }))
+  } //ensuring(result => result.size == input.keys.max + 1)
+
+  fun threatDetected(depth: Int, range: Int): Boolean {
+    require(depth >= 0) { "depth >= 0 failed; with >${depth}<" }
+    require(range >= 0) { "range >= 0 failed; with >${range}<" }
 
     // Here we go: If the layer on the current depth has no range
     // the packet can never be caught (the layer is not able to
@@ -52,43 +55,44 @@ object Day13 {
     // modolo operation, but ... we need to take into consideration
     // that the scanner is moving down and then up again (this is why
     // it is "*2".
-    if(range == 0) false
+    return if(range == 0) false
     else if(range == 1) true
     else depth % ((range - 1) * 2) == 0
   }
 
-  def calcSecScore(fw: List[(Int, Int)]): Int = {
-    require(fw.nonEmpty, s"fw.nonEmpty failed")
+  fun calcSecScore(fw: List<Pair<Int, Int>>): Int {
+    require(fw.isNotEmpty()) { "fw.nonEmpty failed" }
 
-    fw.foldLeft(0) {(secScore, layer) => {
+    return fw.fold(0, { secScore, layer ->
       val (depth, range) = layer
-      if(threatDetected(depth, range)) secScore + depth * range
+      if (threatDetected(depth, range)) secScore + depth * range
       else secScore
-    }}
-  } ensuring(result => result >= 0 && result <= fw.map {case (d, r) => d * r}.sum)
+    })
+  } //ensuring(result => result >= 0 && result <= fw.map {case (d, r) => d * r}.sum)
 
   object Part1 {
-    def solve(input: List[String]): Int = {
-      calcSecScore(buildFw(parseInput(input)))
+    fun solve(input: List<String>): Int {
+      return calcSecScore(buildFw(parseInput(input)))
     }
   }
 
-  def passThrough(fw: List[(Int, Int)], delay: Int): Boolean = {
-    require(fw.nonEmpty, s"fw.nonEmpty failed")
+  fun passThrough(fw: List<Pair<Int, Int>>, delay: Int): Boolean {
+    require(fw.isNotEmpty()) { "fw.nonEmpty failed" }
 
-    fw.forall {case (depth, range) => {
+    return fw.all { p ->
+      val (depth, range) = p
       !threatDetected(depth + delay, range)
-    }}
+    }
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      def go(fw: List[(Int, Int)], delay: Int): Int = {
-        if(passThrough(fw, delay)) delay
+    fun solve(input: List<String>): Int {
+      tailrec fun go(fw: List<Pair<Int, Int>>, delay: Int): Int {
+        return if(passThrough(fw, delay)) delay
         else go(fw, delay + 1)
       }
 
-      go(buildFw(parseInput(input)), 0)
+      return go(buildFw(parseInput(input)), 0)
     }
   }
 }
