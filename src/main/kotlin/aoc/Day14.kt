@@ -1,4 +1,6 @@
-package aoc
+package aoc.day14
+
+import aoc.day10.Day10
 
 /** Problem: [[https://adventofcode.com/2017/day/14]]
   *
@@ -20,21 +22,33 @@ package aoc
   */
 object Day14 {
 
-  val input = Util.readInput("Day14input.txt").head
+  val input = aoc.Util.readInput("Day14input.txt").first()
 
-  def buildGrid(input: String): List[List[Boolean]] = {
-    require(input.nonEmpty, s"input.nonEmpty failed")
+  fun buildGrid(input: String): List<List<Boolean>> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-    val grid = (0 to 127).map(row => Day10.dense2hex(Day10.dense(Day10.sparse(Day10.encode(s"${input}-${row}", Day10.suffix), Day10.seed, Day10.rounds).hash))).toList
-    grid.map(hex2bin(_)).map(row => row.map(_ == '1').toList)
-  } ensuring(result => result.size == 128 && result.forall(_.size == 128))
+    val grid = (0..127).map { row ->
+      Day10.dense2hex(
+        Day10.dense(
+          Day10.sparse(
+            Day10.encode(
+              "${input}-${row}", Day10.suffix), Day10.seed, Day10.rounds).hash))
+    }.toList()
 
-  def hex2bin(hex: String): String = {
-    require(hex.nonEmpty, s"hex.nonEmpty failed")
+    return grid.map { hex2bin(it) }.map { row -> row.map { it == '1' }}.toList()
+  } //ensuring(result => result.size == 128 && result.forall(_.size == 128))
 
-    (hex.foldLeft(List.empty[String])((acc, c) => BigInt(c.toString, 16).toString(2).reverse.padTo(4, '0').reverse :: acc)).reverse.mkString
-  } ensuring(result => result.size == hex.size * 4)
+  fun hex2bin(hex: String): String {
+    require(hex.isNotEmpty()) { "hex.nonEmpty failed" }
 
+    return ""
+/*
+    val bin = hex.fold(emptyList<String>(), { acc, c) ->
+      BigInt(c.toString, 16).toString(2).reverse.padTo(4, '0').reverse :: acc)).reverse.mkString
+      */
+  } // ensuring(result => result.size == hex.size * 4)
+
+/*
   object Part1 {
     def solve(input: String): Int = {
       buildGrid(input).foldLeft(0)((sum, hash) => sum + hash.count(identity))
@@ -92,4 +106,5 @@ object Day14 {
       findRegions(buildGrid(input)).size
     }
   }
+  */
 }
