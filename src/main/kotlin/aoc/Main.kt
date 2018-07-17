@@ -16,6 +16,7 @@ import aoc.day11.Day11
 import aoc.day12.Day12
 import aoc.day13.Day13
 import aoc.day14.Day14
+import aoc.day15.Day15
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
@@ -48,9 +49,9 @@ fun main(args: Array<String>): Unit {
   println("Day13: Part2: pass -> ${Day13.Part2.solve(Day13.input)}")
   println("Day14: Part1: used -> ${Day14.Part1.solve(Day14.input)}")
   println("Day14: Part2: regions -> ${Day14.Part2.solve(Day14.input)}")
+  println("Day15: Part1: count -> ${Day15.Part1.solve()}")
+  println("Day15: Part2: count -> ${Day15.Part2.solve()}")
 /*
-  println(s"Day15: Part1: count -> ${Day15.Part1.solve}")
-  println(s"Day15: Part2: count -> ${Day15.Part2.solve}")
   println(s"Day16: Part1: moves -> ${Day16.Part1.solve(Day16.input)}")
   println(s"Day16: Part2: dance -> ${Day16.Part2.solve(Day16.input)}")
   println(s"Day17: Part1: next -> ${Day17.Part1.solve(Day17.steps, Day17.times)}")
