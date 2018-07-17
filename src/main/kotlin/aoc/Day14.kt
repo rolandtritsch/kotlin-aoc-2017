@@ -41,70 +41,75 @@ object Day14 {
   fun hex2bin(hex: String): String {
     require(hex.isNotEmpty()) { "hex.nonEmpty failed" }
 
-    return ""
-/*
-    val bin = hex.fold(emptyList<String>(), { acc, c) ->
-      BigInt(c.toString, 16).toString(2).reverse.padTo(4, '0').reverse :: acc)).reverse.mkString
-      */
+    return hex.fold("", { acc, c ->
+      acc + java.math.BigInteger(c.toString(), 16).toString(2).padStart(4, '0')
+    })
   } // ensuring(result => result.size == hex.size * 4)
 
-/*
   object Part1 {
-    def solve(input: String): Int = {
-      buildGrid(input).foldLeft(0)((sum, hash) => sum + hash.count(identity))
+    fun solve(input: String): Int {
+      return buildGrid(input).fold(0, { sum, hash -> sum + hash.count { it }})
     }
   }
 
-  def findRegions(grid: List[List[Boolean]]): List[(Int, Int)] = {
-    require(grid.nonEmpty, s"grid.nonEmpty failed")
+  fun findRegions(grid: List<List<Boolean>>): List<Pair<Int, Int>> {
+    require(grid.isNotEmpty()) { "grid.nonEmpty failed" }
 
-    def i2RowCol(i: Int, size: Int): (Int, Int) = {
+    fun i2RowCol(i: Int, size: Int): Pair<Int, Int> {
       val row = i / size
       val col = i % size
-      (row, col)
+      return Pair(row, col)
     }
 
-    val (regionRoots, allNodesVisted) = (0 until grid.size * grid(0).size).foldLeft(List.empty[(Int, Int)], List.empty[(Int, Int)]) {(acc, i) => {
+    val range = (0..(grid.size * grid.get(0).size) - 1).toList()
+    val (regionRoots, _) = range.fold(
+      Pair(emptyList<Pair<Int, Int>>(), emptyList<Pair<Int, Int>>()), { acc, i ->
       val (roots, alreadyVisited) = acc
       val (row, col) = i2RowCol(i, grid.size)
-      if(grid(row)(col) && !alreadyVisited.contains(row, col)) {
+      if(grid.get(row).get(col) && !alreadyVisited.contains(Pair(row, col))) {
         val nodes = findRegion(row, col, grid)
-        ((row, col) :: roots, nodes ++ alreadyVisited)
+        Pair(roots.plus(Pair(row, col)), alreadyVisited.union(nodes).toList())
       } else acc
-    }}
+    })
 
-    regionRoots
-  } ensuring(_.nonEmpty)
+    return regionRoots
+  } //ensuring(_.nonEmpty)
 
   // Get the next coordinates. Ignore the coordinates that are outside the grid.
-  def nextCoordinates(row: Int, col: Int, size: Int): List[(Int, Int)] = {
-    require(row >= 0 && row <= size, s"row >= 0 && row <= size failed; with >${row}<")
-    require(col >= 0 && col <= size, s"col >= 0 && col <= size failed; with >${col}<")
+  fun nextCoordinates(row: Int, col: Int, size: Int): List<Pair<Int, Int>> {
+    require(row >= 0 && row <= size) { "row >= 0 && row <= size failed; with >${row}<" }
+    require(col >= 0 && col <= size) { "col >= 0 && col <= size failed; with >${col}<" }
 
-    List((0, 1), (0, -1), (1, 0), (-1, 0)).map {case(rOffset, cOffset) => (row + rOffset, col + cOffset)}.filterNot {case(row, col) => row < 0 || col < 0 || row >= size || col >= size}
+    val nextOffsets = listOf(Pair(0, 1), Pair(0, -1), Pair(1, 0), Pair(-1, 0))
+    return nextOffsets.map { offset ->
+      val (rOffset, cOffset) = offset
+     Pair(row + rOffset, col + cOffset)
+     }.filterNot { coordinates ->
+       val (r, c) = coordinates
+      r < 0 || c < 0 || r >= size || c >= size
+     }
   }
 
-  def findRegion(row: Int, col: Int, grid: List[List[Boolean]]): List[(Int, Int)] = {
-    require(row >= 0 && row <= grid.size, s"row >= 0 && row <= grid.size failed; with >${row}<")
-    require(col >= 0 && col <= grid(0).size, s"col >= 0 && col <= grid(0).size failed; with >${col}<")
-    require(grid.nonEmpty, s"grid.nonEmpty failed")
+  fun findRegion(row: Int, col: Int, grid: List<List<Boolean>>): List<Pair<Int, Int>> {
+    require(row >= 0 && row <= grid.size) { "row >= 0 && row <= grid.size failed; with >${row}<" }
+    require(col >= 0 && col <= grid.get(0).size) { "col >= 0 && col <= grid(0).size failed; with >${col}<" }
+    require(grid.isNotEmpty()) { "grid.nonEmpty failed" }
 
-    def go(grid: List[List[Boolean]], coordinates: List[(Int, Int)], alreadyVisited: List[(Int, Int)]): List[(Int, Int)] = {
-      val toVisit = coordinates.diff(alreadyVisited)
-      toVisit.foldLeft(alreadyVisited) {(alreadyVisited, coordinate) => {
-        val (row, col) = coordinate
-        if(grid(row)(col)) go(grid, nextCoordinates(row, col, grid.size), coordinate :: alreadyVisited)
-        else alreadyVisited
-      }}
+    fun go(grid: List<List<Boolean>>, coordinates: List<Pair<Int, Int>>, alreadyVisited: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
+      val toVisit = coordinates.minus(alreadyVisited)
+      return toVisit.fold(alreadyVisited, { acc, coordinate ->
+        val (r, c) = coordinate
+        if(grid.get(r).get(c)) go(grid, nextCoordinates(r, c, grid.size), acc.plus(coordinate))
+        else acc
+      })
     }
 
-    go(grid, nextCoordinates(row, col, grid.size), List((row, col)))
-  } ensuring(result => result.nonEmpty && result.contains(row, col))
+    return go(grid, nextCoordinates(row, col, grid.size), listOf(Pair(row, col)))
+  } //ensuring(result => result.nonEmpty && result.contains(row, col))
 
   object Part2 {
-    def solve(input: String): Int = {
-      findRegions(buildGrid(input)).size
+    fun solve(input: String): Int {
+      return findRegions(buildGrid(input)).size
     }
   }
-  */
 }
