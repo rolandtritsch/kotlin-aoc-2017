@@ -1,4 +1,4 @@
-package aoc
+package aoc.day15
 
 /** Problem: [[http://adventofcode.com/2017/day/15]]
   *
@@ -29,16 +29,23 @@ object Day15 {
 
     val devider = 2147483647 //Int.MaxValue
 
-    def next(c: Long, f: Long, d: Long, m: Long): Long = {
+    fun next(c: Long, f: Long, d: Long, m: Long): Long {
       val n = (c * f) % d
-      if(n % m == 0) n
+
+      return if(n % m == 0L) n
       else next(n, f, d, m)
     }
   }
 
-  case class GeneratorConfig(start: Long, factor: Long, devider: Long, modolo: Long, next: (Long, Long, Long, Long) => Long)
+  data class GeneratorConfig(
+    val start: Long,
+    val factor: Long, val devider: Long,
+    val modolo: Long,
+    val next: (Long, Long, Long, Long) -> Long
+  )
 
-  def generator(a: GeneratorConfig, b: GeneratorConfig): Iterator[(Long, Long)] = {
+/*
+  fun generator(a: GeneratorConfig, b: GeneratorConfig): Iterator<Pair<Long, Long>> {
     Iterator.iterate(a.start, b.start)(current => (a.next(current._1, a.factor, a.devider, a.modolo), b.next(current._2, b.factor, b.devider, b.modolo)))
   }
 
@@ -71,4 +78,5 @@ object Day15 {
   object Part2 {
     def solve: Int = run((4, 8), 5000000)
   }
+ */
 }
