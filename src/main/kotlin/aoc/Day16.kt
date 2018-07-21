@@ -1,4 +1,6 @@
-package aoc
+package aoc.day16
+
+import java.math.BigInteger
 
 /** Problem: [[https://adventofcode.com/2017/day/16]]
   *
@@ -19,109 +21,121 @@ package aoc
   */
 object Day16 {
 
-  val input = Util.readInput("Day16input.txt").head.split(',').toList
+  val input = aoc.Util.readInput("Day16input.txt").first().split(",").toList()
 
-  val initial = ('a' to 'p').toArray
+  val initial = ('a'..'p').toList()
   val times = 1000000000
 
-  sealed abstract class Move
-  case class Spin(size: Int) extends Move
-  case class Exchange(thiz: Int, thaz: Int) extends Move
-  case class Partner(thiz: Char, thaz: Char) extends Move
-
-  def parseInput(input: List[String]): List[Move] = {
-    require(input.nonEmpty, s"input.nonEmpty failed")
-
-    input.map(l => l(0) match {
-      case 's' => {
-        val s = l.substring(1).toInt
-        assert(s >= 1 && s <= initial.size, s"s >= 1 && s <= initial.size failed; with >${s}}<")
-        Spin(s)
-      }
-
-      case 'x' => {
-        val ps = l.substring(1).split('/')
-        assert(ps.size == 2)
-        val thiz = ps(0).toInt
-        assert(thiz >= 0 && thiz <= initial.size - 1, s"thiz >= 0 && thiz <= initial.size - 1 failed; with >${thiz}}<")
-        val thaz = ps(1).toInt
-        assert(thaz >= 0 && thaz <= initial.size - 1, s"thaz >= 0 && thaz <= initial.size - 1 failed; with >${thaz}}<")
-        assert(thiz != thaz, s"thiz != thaz failed; with >${thiz}</>${thaz}<")
-        Exchange(thiz, thaz)
-      }
-
-      case 'p' => {
-        val ps = l.substring(1).split('/')
-        assert(ps.size == 2)
-        val thiz = ps(0).charAt(0)
-        assert(initial.contains(thiz), s"initial.contains(thiz) failed; with >${thiz}<")
-        val thaz = ps(1).charAt(0)
-        assert(initial.contains(thaz), s"initial.contains(thaz) failed; with >${thaz}<")
-        assert(thiz != thaz, s"thiz != thaz failed; with >${thiz}</>${thaz}<")
-        Partner(thiz, thaz)
-      }
-    })
+  sealed class Move {
+    data class Spin(val size: Int) : Move()
+    data class Exchange(val thiz: Int, val thaz: Int) : Move()
+    data class Partner(val thiz: Char, val thaz: Char) : Move()
   }
 
-  @scala.annotation.tailrec
-  def executeMoves(programs: Array[Char], moves: List[Move]): Array[Char] = {
-    require(programs.nonEmpty, s"programs.nonEmpty failed")
+  fun parseInput(input: List<String>): List<Move> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-    def executeMove(programs: Array[Char], move: Move): Array[Char] = move match {
-      case Spin(s) => {
+    return input.map { l -> when(l.get(0)) {
+      's' -> {
+        val s = l.substring(1).toInt()
+        assert(s in 1..initial.size) { "s >= 1 && s <= initial.size failed; with >${s}}<" }
+        Move.Spin(s)
+      }
+
+      'x' -> {
+        val ps = l.substring(1).split("/")
+        assert(ps.size == 2)
+        val thiz = ps.get(0).toInt()
+        assert(thiz in 0..initial.size - 1) { "thiz >= 0 && thiz <= initial.size - 1 failed; with >${thiz}}<" }
+        val thaz = ps.get(1).toInt()
+        assert(thaz in 0..initial.size - 1) { "thaz >= 0 && thaz <= initial.size - 1 failed; with >${thaz}}<" }
+        assert(thiz != thaz) { "thiz != thaz failed; with >${thiz}</>${thaz}<" }
+        Move.Exchange(thiz, thaz)
+      }
+
+      'p' -> {
+        val ps = l.substring(1).split("/")
+        assert(ps.size == 2)
+        val thiz = ps.get(0).get(0)
+        assert(initial.contains(thiz)) { "initial.contains(thiz) failed; with >${thiz}<" }
+        val thaz = ps.get(1).get(0)
+        assert(initial.contains(thaz)) { "initial.contains(thaz) failed; with >${thaz}<" }
+        assert(thiz != thaz) { "thiz != thaz failed; with >${thiz}</>${thaz}<" }
+        Move.Partner(thiz, thaz)
+      }
+      else -> {
+        assert(false) { "Unknown type of move" }
+        Move.Spin(0)
+      }
+    }}
+  }
+
+  fun <T> List<T>.splitAt(i: Int) = Pair(
+    this.slice(0..i-1),
+    this.slice(i..this.size-1)
+  )
+
+  fun <T> List<T>.updated(i: Int, e: T): List<T> {
+    val head = this.slice(0..i-1)
+    val tail = this.slice(i+1..this.size-1)
+    return head + listOf(e) + tail
+  }
+
+  tailrec fun executeMoves(programs: List<Char>, moves: List<Move>): List<Char> {
+    require(programs.isNotEmpty()) { "programs.nonEmpty failed" }
+
+    fun executeMove(programs: List<Char>, move: Move): List<Char> = when(move) {
+      is Move.Spin -> {
         // Note: The Spin rotates counter-clockwise
-        val (head, tail) = programs.splitAt(programs.size - s)
-        tail ++ head
+        val (head, tail) = programs.splitAt(programs.size - move.size)
+        tail + head
       }
 
-      case Exchange(thiz, thaz) => {
-        val thizProgram = programs.charAt(thiz)
-        val thazProgram = programs.charAt(thaz)
-        programs.updated(thiz, thazProgram).updated(thaz, thizProgram)
+      is Move.Exchange -> {
+        val thizProgram = programs.get(move.thiz)
+        val thazProgram = programs.get(move.thaz)
+        programs.updated(move.thiz, thazProgram).updated(move.thaz, thizProgram)
       }
 
-      case Partner(thiz, thaz) => {
-        val thizPos = programs.indexOf(thiz)
-        val thazPos = programs.indexOf(thaz)
-        programs.updated(thizPos, thaz).updated(thazPos, thiz)
+      is Move.Partner -> {
+        val thizPos = programs.indexOf(move.thiz)
+        val thazPos = programs.indexOf(move.thaz)
+        programs.updated(thizPos, move.thaz).updated(thazPos, move.thiz)
       }
     }
 
-    moves match {
-      case Nil => programs
-      case m :: ms => executeMoves(executeMove(programs, m), ms)
-    }
+    return if(moves.isEmpty()) programs
+    else executeMoves(executeMove(programs, moves.first()), moves.drop(1))
   }
 
-  @scala.annotation.tailrec
-  def executeDance(programs: Array[Char], moves: List[Move], times: BigInt): Array[Char] = {
-    require(programs.nonEmpty, s"programs.nonEmpty failed")
-    require(moves.nonEmpty, s"moves.nonEmpty failed")
+  tailrec fun executeDance(programs: List<Char>, moves: List<Move>, times: Long): List<Char> {
+    require(programs.isNotEmpty()) { "programs.nonEmpty failed" }
+    require(moves.isNotEmpty()) { "moves.nonEmpty failed" }
 
-    if(times <= 0) programs
+    return if(times <= 0) programs
     else executeDance(executeMoves(programs, moves), moves, times - 1)
   }
 
-  @scala.annotation.tailrec
-  def findLoop(programs: Array[Char], moves: List[Move], times: BigInt): BigInt = {
-    require(programs.nonEmpty, s"programs.nonEmpty failed")
-    require(moves.nonEmpty, s"moves.nonEmpty failed")
+  tailrec fun findLoop(programs: List<Char>, moves: List<Move>, times: Long): Long {
+    require(programs.isNotEmpty()) { "programs.nonEmpty failed" }
+    require(moves.isNotEmpty()) { "moves.nonEmpty failed" }
 
-    if(programs.sameElements(initial)) times
+    return if(programs.equals(initial)) times
     else findLoop(executeMoves(programs, moves), moves, times + 1)
   }
 
+
   object Part1 {
-    def solve(input: List[String]): String = {
-      executeMoves(initial, parseInput(input)).mkString
+    fun solve(input: List<String>): String {
+      return executeMoves(initial, parseInput(input)).joinToString("")
     }
   }
 
   object Part2 {
-    def solve(input: List[String]): String = {
+    fun solve(input: List<String>): String {
       val moves = parseInput(input)
       val loopTimes = findLoop(executeMoves(initial, moves), moves,1)
-      executeDance(initial, moves, times % loopTimes).mkString
+      return executeDance(initial, moves, times % loopTimes).joinToString("")
     }
   }
 }

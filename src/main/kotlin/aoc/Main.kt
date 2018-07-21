@@ -17,6 +17,7 @@ import aoc.day12.Day12
 import aoc.day13.Day13
 import aoc.day14.Day14
 import aoc.day15.Day15
+import aoc.day16.Day16
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
