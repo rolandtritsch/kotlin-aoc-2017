@@ -51,9 +51,9 @@ fun main(args: Array<String>): Unit {
   println("Day14: Part2: regions -> ${Day14.Part2.solve(Day14.input)}")
   println("Day15: Part1: count -> ${Day15.Part1.solve()}")
   println("Day15: Part2: count -> ${Day15.Part2.solve()}")
+  println("Day16: Part1: moves -> ${Day16.Part1.solve(Day16.input)}")
+  println("Day16: Part2: dance -> ${Day16.Part2.solve(Day16.input)}")
 /*
-  println(s"Day16: Part1: moves -> ${Day16.Part1.solve(Day16.input)}")
-  println(s"Day16: Part2: dance -> ${Day16.Part2.solve(Day16.input)}")
   println(s"Day17: Part1: next -> ${Day17.Part1.solve(Day17.steps, Day17.times)}")
   println(s"Day17: Part2: zero -> ${Day17.Part2.solve(Day17.steps, Day17.times2)}")
   println(s"Day18: Part1: frequency -> ${Day18.Part1.solve(Day18.input)}")
