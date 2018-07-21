@@ -1,4 +1,4 @@
-package aoc
+package aoc.day17
 
 /** Problem: [[http://adventofcode.com/2017/day/17]]
   *
@@ -17,67 +17,65 @@ package aoc
   */
 object Day17 {
 
-  import scala.collection.mutable
-
-  val input = Util.readInput("Day17input.txt").head.toInt
+  val input = aoc.Util.readInput("Day17input.txt").first().toInt()
 
   val steps = input
   val times = 2017
   val times2 = 50000000
 
-  def moveForward(position: Int, size: Int, steps: Int): Int = {
-    require(position >= 0 && position <= size, s"position >= 0 && position <= size failed; with >${position}<")
-    require(size >= 0, s"size >= 0 failed; with >${size}<")
-    require(steps >= 0, s"steps >= 0 failed; with >${steps}<")
+  fun moveForward(position: Int, size: Int, steps: Int): Int {
+    require(position in 0..size) { "position >= 0 && position <= size failed; with >${position}<" }
+    require(size >= 0) { "size >= 0 failed; with >${size}<" }
+    require(steps >= 0) { "steps >= 0 failed; with >${steps}<" }
 
-    if (steps <= 0) position
+    return if (steps <= 0) position
     else if (position + 1 >= size) moveForward(0, size, steps - 1)
     else moveForward(position + 1, size, steps - 1)
   }
 
-  def insertAfter(position: Int, buffer: mutable.ListBuffer[Int], n: Int): mutable.ListBuffer[Int] = {
-    require(position >= 0 && position <= buffer.size, s"position >= 0 && position <= buffer.size failed; with >${position}<")
-    require(buffer.nonEmpty, s"buffer.nonEmpty failed")
+  fun insertAfter(position: Int, buffer: MutableList<Int>, n: Int): MutableList<Int> {
+    require(position in 0..buffer.size) { "position >= 0 && position <= buffer.size failed; with >${position}<" }
+    require(buffer.isNotEmpty()) { "buffer.nonEmpty failed" }
 
-    buffer.insert(position + 1, n)
-    buffer
+    buffer.add(position + 1, n)
+    return buffer
   }
 
-  def nextBuffer(position: Int, buffer: mutable.ListBuffer[Int], steps: Int, n: Int): (Int, mutable.ListBuffer[Int]) = {
-    require(position >= 0 && position <= buffer.size, s"position >= 0 && position <= buffer.size failed; with >${position}<")
-    require(buffer.nonEmpty, s"buffer.nonEmpty failed")
+  fun nextBuffer(position: Int, buffer: MutableList<Int>, steps: Int, n: Int): Pair<Int, MutableList<Int>> {
+    require(position in 0..buffer.size) { "position >= 0 && position <= buffer.size failed; with >${position}<" }
+    require(buffer.isNotEmpty()) { "buffer.nonEmpty failed" }
 
     val insertPosition = moveForward(position, buffer.size, steps)
     val currentPosition = insertPosition + 1
-    (currentPosition, insertAfter(insertPosition, buffer, n))
+    return Pair(currentPosition, insertAfter(insertPosition, buffer, n))
   }
 
-  def buildBuffer(buffer: mutable.ListBuffer[Int], steps: Int, times: Int): (Int, mutable.ListBuffer[Int]) = {
-    require(steps >= 1, s"step >= 1 failed; with >${steps}<")
-    require(times >= 1, s"times >= 1 failed; with >${times}<")
+  fun buildBuffer(buffer: MutableList<Int>, steps: Int, times: Int): Pair<Int, MutableList<Int>> {
+    require(steps >= 1) { "step >= 1 failed; with >${steps}<" }
+    require(times >= 1) { "times >= 1 failed; with >${times}<" }
 
-    (1.to(times)).foldLeft(0, buffer)((current, n) => {
+    return (1..times).fold(Pair(0, buffer), { current, n ->
       val (currentPosition, currentBuffer) = current
       nextBuffer(currentPosition, currentBuffer, steps, n)
     })
   }
 
   object Part1 {
-    def solve(steps: Int, times: Int): Int = {
-      val (position, buffer) = buildBuffer(mutable.ListBuffer(0), steps, times)
-      buffer(position + 1)
+    fun solve(steps: Int, times: Int): Int {
+      val (position, buffer) = buildBuffer(mutableListOf(0), steps, times)
+      return buffer.get(position + 1)
     }
   }
 
   object Part2 {
-    def solve(steps: Int, times: Int): Int = {
-      val (finalPosition, finalValue) = (1.to(times)).foldLeft(0, 0) { (current, size) => {
+    fun solve(steps: Int, times: Int): Int {
+      val (finalPosition, finalValue) = (1..times).fold(Pair(0, 0), { current, size ->
         val (currentPosition, currentValue) = current
         val nextPosition = moveForward(currentPosition, size, steps)
-        if (nextPosition == 0) (nextPosition + 1, size)
-        else (nextPosition + 1, currentValue)
-      }}
-      finalValue
+        if (nextPosition == 0) Pair(nextPosition + 1, size)
+        else Pair(nextPosition + 1, currentValue)
+      })
+      return finalValue
     }
   }
 }
