@@ -1,5 +1,7 @@
 package aoc.day15
 
+import kotlin.coroutines.experimental.buildIterator
+
 /** Problem: [[http://adventofcode.com/2017/day/15]]
   *
   * Solution:
@@ -21,13 +23,13 @@ object Day15 {
   // I just copied the values from it :).
 
   object Default {
-    val startA = 703
-    val startB = 516
+    val startA = 703L
+    val startB = 516L
 
-    val factorA = 16807
-    val factorB = 48271
+    val factorA = 16807L
+    val factorB = 48271L
 
-    val devider = 2147483647 //Int.MaxValue
+    val devider = 2147483647L //Int.MaxValue
 
     fun next(c: Long, f: Long, d: Long, m: Long): Long {
       val n = (c * f) % d
@@ -44,39 +46,45 @@ object Day15 {
     val next: (Long, Long, Long, Long) -> Long
   )
 
-/*
-  fun generator(a: GeneratorConfig, b: GeneratorConfig): Iterator<Pair<Long, Long>> {
-    Iterator.iterate(a.start, b.start)(current => (a.next(current._1, a.factor, a.devider, a.modolo), b.next(current._2, b.factor, b.devider, b.modolo)))
+  fun generator(a: GeneratorConfig, b: GeneratorConfig): Iterator<Pair<Long, Long>> = buildIterator {
+    var current = Pair(a.start, b.start)
+    while(true) {
+      yield(current)
+      current = Pair(
+        a.next(current.first, a.factor, a.devider, a.modolo),
+        b.next(current.second, b.factor, b.devider, b.modolo)
+      )
+    }
   }
 
-  def matching(pair: (Long, Long)): Boolean = {
-    (pair._1 & 0xffff) == (pair._2 & 0xffff)
+  fun matching(pair: Pair<Long, Long>): Boolean {
+    return pair.first.and(0xffff) == pair.second.and(0xffff)
   }
 
-  def countMatchingPairs(gen: Iterator[(Long, Long)], depth: Int): Int = {
-    def go(g: Iterator[(Long, Long)], d: Int, c: Int): Int = {
-      if(d <= 0) c
-      else if(matching(g.next)) go(g, d - 1, c + 1)
+  fun countMatchingPairs(gen: Iterator<Pair<Long, Long>>, depth: Int): Int {
+    tailrec fun go(g: Iterator<Pair<Long, Long>>, d: Int, c: Int): Int {
+      return if(d <= 0) c
+      else if(matching(g.next())) go(g, d - 1, c + 1)
       else go(g, d - 1, c)
     }
 
-    go(gen, depth, 0)
+    return go(gen, depth, 0)
   }
 
-  def run(modolo: (Long, Long), depth: Int): Int = {
-    val genA = GeneratorConfig(Default.startA, Default.factorA, Default.devider, modolo._1, Default.next)
-    val genB = GeneratorConfig(Default.startB, Default.factorB, Default.devider, modolo._2, Default.next)
+  fun run(modolo: Pair<Long, Long>, depth: Int): Int {
+    val genA = GeneratorConfig(Default.startA, Default.factorA, Default.devider, modolo.first, Default::next)
+    val genB = GeneratorConfig(Default.startB, Default.factorB, Default.devider, modolo.second, Default::next)
     val gen = generator(genA, genB)
 
-    countMatchingPairs(gen, depth)
+    return countMatchingPairs(gen, depth)
   }
 
+
   object Part1 {
-    def solve: Int = run((1, 1), 40000000)
+    fun solve(): Int = run(Pair(1, 1), 40000000)
   }
 
   object Part2 {
-    def solve: Int = run((4, 8), 5000000)
+    fun solve(): Int = run(Pair(4, 8), 5000000)
   }
- */
 }
