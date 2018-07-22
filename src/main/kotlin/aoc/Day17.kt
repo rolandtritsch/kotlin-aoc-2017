@@ -69,7 +69,7 @@ object Day17 {
 
   object Part2 {
     fun solve(steps: Int, times: Int): Int {
-      val (finalPosition, finalValue) = (1..times).fold(Pair(0, 0), { current, size ->
+      val (_, finalValue) = (1..times).fold(Pair(0, 0), { current, size ->
         val (currentPosition, currentValue) = current
         val nextPosition = moveForward(currentPosition, size, steps)
         if (nextPosition == 0) Pair(nextPosition + 1, size)
