@@ -21,6 +21,7 @@ import aoc.day16.Day16
 import aoc.day17.Day17
 import aoc.day18.Day18
 import aoc.day19.Day19
+import aoc.day20.Day20
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
@@ -63,17 +64,17 @@ fun main(args: Array<String>): Unit {
   println("Day18: Part2: deadlock -> ${Day18.Part2.solve(Day18.input)}")
   println("Day19: Part1: path -> ${Day19.Part1.solve(Day19.input)}")
   println("Day19: Part2: steps -> ${Day19.Part2.solve(Day19.input)}")
+  println("Day20: Part1: findclosest -> ${Day20.Part1.solve(Day20.input)}")
+  println("Day20: Part2: nocollisions -> ${Day20.Part2.solve(Day20.input)}")
 /*
-  println(s"Day20: Part1: findclosest -> ${Day20.Part1.solve(Day20.input)}")
-  println(s"Day20: Part2: nocollisions -> ${Day20.Part2.solve(Day20.input)}")
-  println(s"Day21: Part1: after5 -> ${Day21.Part1.solve(Day21.input)}")
-  println(s"Day21: Part2: after18 -> ${Day21.Part2.solve(Day21.input)}")
-  println(s"Day22: Part1: simple -> ${Day22.Part1.solve(Day22.input)}")
-  println(s"Day22: Part2: advanced -> ${Day22.Part2.solve(Day22.input)}")
-  println(s"Day23: Part1: run -> ${Day23.Part1.solve(Day23.input)}")
-  println(s"Day23: Part2: run -> ${Day23.Part2.solve(Day23.input)}")
-  println(s"Day24: Part1: strongest -> ${Day24.Part1.solve(Day24.input)}")
-  println(s"Day24: Part2: longest -> ${Day24.Part2.solve(Day24.input)}")
-  println(s"Day25: Part1: run -> ${Day25.Part1.solve(Day25.input)}")
+  println("Day21: Part1: after5 -> ${Day21.Part1.solve(Day21.input)}")
+  println("Day21: Part2: after18 -> ${Day21.Part2.solve(Day21.input)}")
+  println("Day22: Part1: simple -> ${Day22.Part1.solve(Day22.input)}")
+  println("Day22: Part2: advanced -> ${Day22.Part2.solve(Day22.input)}")
+  println("Day23: Part1: run -> ${Day23.Part1.solve(Day23.input)}")
+  println("Day23: Part2: run -> ${Day23.Part2.solve(Day23.input)}")
+  println("Day24: Part1: strongest -> ${Day24.Part1.solve(Day24.input)}")
+  println("Day24: Part2: longest -> ${Day24.Part2.solve(Day24.input)}")
+  println("Day25: Part1: run -> ${Day25.Part1.solve(Day25.input)}")
 */
 }
