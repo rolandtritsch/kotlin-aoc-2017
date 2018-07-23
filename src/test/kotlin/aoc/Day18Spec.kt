@@ -11,7 +11,7 @@ class Day18Spec : ShouldSpec({
     }
 
     "part2" {
-      //Day18.Part2.solve(Day18.input) shouldBe 7112
+      Day18.Part2.solve(Day18.input) shouldBe 7112
     }
   }
 })

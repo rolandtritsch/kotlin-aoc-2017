@@ -52,7 +52,7 @@ object Day18 {
 
     data class Send(val r: Char) : Operation() {
       override fun execute(program: Program): Program {
-        val success = program.writeChannel.offerFirst(program.register.get(r))
+        val success = program.writeChannel.offerFirst(program.register.getValue(r))
         assert(success)
         return program.copy(
           counter = program.counter + 1,
@@ -63,7 +63,7 @@ object Day18 {
 
     data class Set(val r: Char, val v: Long) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = v
+        program.register.put(r, v)
         return program.copy(
           counter = program.counter + 1
         )
@@ -72,7 +72,7 @@ object Day18 {
 
     data class SetR(val r: Char, val v: Char) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r)
+        program.register.put(r, program.register.getValue(v))
         return program.copy(
           counter = program.counter + 1
         )
@@ -81,7 +81,7 @@ object Day18 {
 
     data class Add(val r: Char, val v: Long) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r) + v
+        program.register.put(r, program.register.getValue(r) + v)
         return program.copy(
           counter = program.counter + 1
         )
@@ -90,7 +90,7 @@ object Day18 {
 
     data class AddR(val r: Char, val v: Char) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r) + program.register.getValue(v)
+        program.register.put(r, program.register.getValue(r) + program.register.getValue(v))
         return program.copy(
           counter = program.counter + 1
         )
@@ -99,7 +99,7 @@ object Day18 {
 
     data class Multiply(val r: Char, val v: Long) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r) * v
+        program.register.put(r, program.register.getValue(r) * v)
         return program.copy(
           counter = program.counter + 1
         )
@@ -108,7 +108,7 @@ object Day18 {
 
     data class MultiplyR(val r: Char, val v: Char) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r) * program.register.getValue(v)
+        program.register.put(r, program.register.getValue(r) * program.register.getValue(v))
         return program.copy(
           counter = program.counter + 1
         )
@@ -117,7 +117,7 @@ object Day18 {
 
     data class Modulo(val r: Char, val v: Long) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(r) % v
+        program.register.put(r, program.register.getValue(r).rem(v))
         return program.copy(
           counter = program.counter + 1
         )
@@ -126,7 +126,7 @@ object Day18 {
 
     data class ModuloR(val r: Char, val v: Char) : Operation() {
       override fun execute(program: Program): Program {
-        program.register[r] = program.register.getValue(v) % program.register.getValue(v)
+        program.register.put(r, program.register.getValue(r).rem(program.register.getValue(v)))
         return program.copy(
           counter = program.counter + 1
         )
@@ -144,7 +144,7 @@ object Day18 {
                 deadlocked = true
               )
             } else {
-              program.register[r] = v
+              program.register.put(r, v)
               program.copy(
                 counter = program.counter + 1
               )
@@ -252,7 +252,7 @@ object Day18 {
     } //ensuring(_.nonEmpty, s"_.nonEmpty failed")
   }
 
-  fun run(program: Program, done: (Program) -> Boolean, exit: (Program) -> Long): Long {
+  tailrec fun run(program: Program, done: (Program) -> Boolean, exit: (Program) -> Long): Long {
     return if (done(program)) exit(program)
     else run(program.instructions[program.counter].execute(program), done, exit)
   }
@@ -309,8 +309,9 @@ object Day18 {
       val thread0 = kotlin.concurrent.thread() { result0 = run(p0, ::done, ::exit) }
       val thread1 = kotlin.concurrent.thread() { result1 = run(p1, ::done, ::exit) }
 
-      thread0.join(60*1000)
-      thread1.join(60*1000)
+      val SECS = 1000L
+      thread0.join(60*SECS)
+      thread1.join(60*SECS)
 
       return result0 + result1
     }
