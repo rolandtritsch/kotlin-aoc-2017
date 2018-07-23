@@ -20,6 +20,7 @@ import aoc.day15.Day15
 import aoc.day16.Day16
 import aoc.day17.Day17
 import aoc.day18.Day18
+import aoc.day19.Day19
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
@@ -60,9 +61,9 @@ fun main(args: Array<String>): Unit {
   println("Day17: Part2: zero -> ${Day17.Part2.solve(Day17.steps, Day17.times2)}")
   println("Day18: Part1: frequency -> ${Day18.Part1.solve(Day18.input)}")
   println("Day18: Part2: deadlock -> ${Day18.Part2.solve(Day18.input)}")
+  println("Day19: Part1: path -> ${Day19.Part1.solve(Day19.input)}")
+  println("Day19: Part2: steps -> ${Day19.Part2.solve(Day19.input)}")
 /*
-  println(s"Day19: Part1: path -> ${Day19.Part1.solve(Day19.input)}")
-  println(s"Day19: Part2: steps -> ${Day19.Part2.solve(Day19.input)}")
   println(s"Day20: Part1: findclosest -> ${Day20.Part1.solve(Day20.input)}")
   println(s"Day20: Part2: nocollisions -> ${Day20.Part2.solve(Day20.input)}")
   println(s"Day21: Part1: after5 -> ${Day21.Part1.solve(Day21.input)}")
