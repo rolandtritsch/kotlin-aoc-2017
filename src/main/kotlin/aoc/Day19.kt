@@ -1,4 +1,6 @@
-package aoc
+package aoc.day19
+
+typealias DirectionType = Char
 
 /** Problem: [[http://adventofcode.com/2017/day/19]]
   *
@@ -16,7 +18,7 @@ package aoc
   */
 object Day19 {
 
-  val input = Util.readInput("Day19input.txt").map(_.toCharArray).toArray
+  val input = aoc.Util.readInput("Day19input.txt").map { it.toCharArray() }.toTypedArray()
 
   object Direction {
     val UP = 'U'
@@ -25,80 +27,90 @@ object Day19 {
     val RIGHT = 'R'
   }
 
-  type DirectionType = Char
+  data class State(
+    val row: Int,
+    val col: Int,
+    val direction: DirectionType,
+    val maze: Array<CharArray>,
+    val steps: Int,
+    val path: String, val done: Boolean
+  ) {
+    fun next(): State = when(maze[row][col]) {
+      '|' -> if(direction == Direction.UP) State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
+      else if(direction == Direction.DOWN) State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
+      else if(direction == Direction.RIGHT) State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
+      else if(direction == Direction.LEFT) State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
+      else { assert(false) { "Unkown direction" }; State(0, 0, ' ', emptyArray(), 0, "", true)  }
 
-  case class State(row: Int, col: Int, direction: DirectionType, maze: Array[Array[Char]], steps: Int, path: String, done: Boolean) {
-    def next: State = maze(row)(col) match {
-      case '|' if(direction == Direction.UP) => State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
-      case '|' if(direction == Direction.DOWN) => State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
-      case '|' if(direction == Direction.RIGHT) => State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
-      case '|' if(direction == Direction.LEFT) => State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
-      case '-' if(direction == Direction.UP) => State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
-      case '-' if(direction == Direction.DOWN) => State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
-      case '-' if(direction == Direction.RIGHT) => State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
-      case '-' if(direction == Direction.LEFT) => State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
-      case '+' => {
+      '-' -> if(direction == Direction.UP) State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
+      else if(direction == Direction.DOWN) State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
+      else if(direction == Direction.RIGHT) State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
+      else if(direction == Direction.LEFT) State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
+      else { assert(false) { "Unkown direction" }; State(0, 0, ' ', emptyArray(), 0, "", true)  }
+
+      '+' -> {
         if(direction == Direction.LEFT || direction == Direction.RIGHT) {
-          if(row > 0 && maze(row - 1)(col) != ' ') State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
-          else if(row < maze.size - 1 && maze(row + 1)(col) != ' ') State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
+          if(row > 0 && maze[row - 1][col] != ' ') State(row - 1, col, Direction.UP, maze, steps + 1, path, false)
+          else if(row < maze.size - 1 && maze[row + 1][col] != ' ') State(row + 1, col, Direction.DOWN, maze, steps + 1, path, false)
           else {
-            assert(false)
-            State(0, 0, 0, Array(), 0, "", true)
+            assert(false) { "Unknown state" }
+            State(0, 0, ' ', emptyArray(), 0, "", true)
           }
         } else if(direction == Direction.UP || direction == Direction.DOWN) {
-          if(col > 0 && maze(row)(col - 1) != ' ') State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
-          else if(col < maze(row).size - 1 && maze(row)(col + 1) != ' ') State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
+          if(col > 0 && maze[row][col - 1] != ' ') State(row, col - 1, Direction.LEFT, maze, steps + 1, path, false)
+          else if(col < maze[row].size - 1 && maze[row][col + 1] != ' ') State(row, col + 1, Direction.RIGHT, maze, steps + 1, path, false)
           else {
-            assert(false)
-            State(0, 0, 0, Array(), 0, "", true)
+            assert(false) { "Unknown state" }
+            State(0, 0, ' ', emptyArray(), 0, "", true)
           }
         } else {
-          assert(false)
-          State(0, 0, 0, Array(), 0, "", true)
+          assert(false) { "Unknown state" }
+          State(0, 0, ' ', emptyArray(), 0, "", true)
         }
       }
-      case _ => {
-        assert(('A' to 'Z').contains(maze(row)(col)))
+
+      else -> {
+        assert(maze[row][col] in 'A'..'Z')
 
         if(direction == Direction.DOWN) {
-          if(row == maze.size - 1 || maze(row + 1)(col) == ' ') State(row, col, direction, maze, steps + 1, path + maze(row)(col), true)
-          else State(row + 1, col, direction, maze, steps + 1, path + maze(row)(col), false)
+          if(row == maze.size - 1 || maze[row + 1][col] == ' ') State(row, col, direction, maze, steps + 1, path + maze[row][col], true)
+          else State(row + 1, col, direction, maze, steps + 1, path + maze[row][col], false)
         } else if(direction == Direction.UP) {
-          if(row == 0 || maze(row - 1)(col) == ' ') State(row, col, direction, maze, steps + 1, path + maze(row)(col), true)
-          else State(row - 1, col, direction, maze, steps + 1, path + maze(row)(col), false)
+          if(row == 0 || maze[row - 1][col] == ' ') State(row, col, direction, maze, steps + 1, path + maze[row][col], true)
+          else State(row - 1, col, direction, maze, steps + 1, path + maze[row][col], false)
         } else if(direction == Direction.LEFT) {
-          if(col == 0 || maze(row)(col - 1) == ' ') State(row, col, direction, maze, steps + 1, path + maze(row)(col), true)
-          else State(row, col - 1, direction, maze, steps + 1, path + maze(row)(col), false)
+          if(col == 0 || maze[row][col - 1] == ' ') State(row, col, direction, maze, steps + 1, path + maze[row][col], true)
+          else State(row, col - 1, direction, maze, steps + 1, path + maze[row][col], false)
         } else if(direction == Direction.RIGHT) {
-          if(col == maze(row).size - 1 || maze(row)(col + 1) == ' ') State(row, col, direction, maze, steps + 1, path + maze(row)(col), true)
-          else State(row, col + 1, direction, maze, steps + 1, path + maze(row)(col), false)
+          if(col == maze[row].size - 1 || maze[row][col + 1] == ' ') State(row, col, direction, maze, steps + 1, path + maze[row][col], true)
+          else State(row, col + 1, direction, maze, steps + 1, path + maze[row][col], false)
         } else {
-          assert(false)
-          State(0, 0, 0, Array(), 0, "", false)
+          assert(false)  { "Unknown state" }
+          State(0, 0, ' ', emptyArray(), 0, "", false)
         }
       }
     }
   }
 
-  def walkTheMaze(maze: Array[Array[Char]]): (String, Int) = {
-    def go(s: State): State = {
-      if(s.done) s
-      else go(s.next)
+  fun walkTheMaze(maze: Array<CharArray>): Pair<String, Int> {
+    tailrec fun go(s: State): State {
+      return if(s.done) s
+      else go(s.next())
     }
 
-    val finalState = go(State(0, maze(0).indexOf('|'), Direction.DOWN, maze, 0, "", false))
-    (finalState.path, finalState.steps)
+    val finalState = go(State(0, maze[0].indexOf('|'), Direction.DOWN, maze, 0, "", false))
+    return Pair(finalState.path, finalState.steps)
   }
 
   object Part1 {
-    def solve(input: Array[Array[Char]]): String = {
-      walkTheMaze(input)._1
+    fun solve(input: Array<CharArray>): String {
+      return walkTheMaze(input).first
     }
   }
 
   object Part2 {
-    def solve(input: Array[Array[Char]]): Int = {
-      walkTheMaze(input)._2
+    fun solve(input: Array<CharArray>): Int {
+      return walkTheMaze(input).second
     }
   }
 }
