@@ -1,4 +1,8 @@
-package aoc
+package aoc.day21
+
+import java.util.*
+
+typealias Grid = Array<CharArray>
 
 /** Problem: [[http://adventofcode.com/2017/day/21]]
   *
@@ -19,74 +23,93 @@ package aoc
   */
 object Day21 {
 
-  val input = Util.readInput("Day21input.txt")
+  val input = aoc.Util.readInput("Day21input.txt")
 
-  val start = Array(
-    ".#.".toCharArray,
-    "..#".toCharArray,
-    "###".toCharArray
+  val start = arrayOf(
+    ".#.".toCharArray(),
+    "..#".toCharArray(),
+    "###".toCharArray()
   )
 
-  type Grid = Array[Array[Char]]
+  data class Rule(val from: String, val to: Grid)
 
-  object Grid {
-    def toString(thiz: Grid): String = {
-      thiz.map(_.mkString).mkString("/")
-    }
+  fun gridToString(thiz: Grid): String {
+    return thiz.map { it.joinToString("") }.joinToString("/")
   }
 
-  case class Rule(from: String, to: Grid)
+  fun parseInput(input: List<String>): List<Rule> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-  def parseInput(input: List[String]): List[Rule] = {
-    require(input.nonEmpty, "input.nonEmpty failed")
+    fun Array<CharArray>.transposed(): Array<CharArray> {
+      require(this.isNotEmpty()) { "this.isNotEmpty() failed" }
+      require(this.first().isNotEmpty()) { "this.first().isNotEmpty() failed" }
 
-    def rotations(fromGrid: Grid): List[Grid] = {
-      (1 to 3).scanLeft(fromGrid)((g, _) => rotateClockWise(g)).toList
+      val rows = this.size
+      val cols = this.first().size
+
+      val transpose = Array(cols) { CharArray(rows) }
+      for (r in 0..rows - 1) {
+        for (c in 0..cols - 1) {
+          transpose[c][r] = this[r][c]
+        }
+      }
+      return transpose
     }
 
-    def flips(fromGrid: Grid): List[Grid] = {
-      List(fromGrid) ++
-      List(flipHorizontal(fromGrid)) ++
-      rotations(fromGrid) ++
+    fun rotateClockWise(thiz: Grid): Grid {
+      return thiz.transposed().map { it.reversed().toCharArray() }.toTypedArray()
+    }
+
+    fun rotations(fromGrid: Grid): List<Grid> {
+      return (1..3).fold(Pair(fromGrid, emptyList<Grid>()), { p: Pair<Grid, List<Grid>>, _: Int ->
+        val (g, gs) = p
+        val rotated = rotateClockWise(g)
+        Pair(rotated, gs + listOf(rotated))
+      }).second
+    }
+
+    fun flipHorizontal(thiz: Grid): Grid {
+      return thiz.reversed().toTypedArray()
+    }
+
+    fun flips(fromGrid: Grid): List<Grid> {
+      return listOf(fromGrid) +
+      listOf(flipHorizontal(fromGrid)) +
+      rotations(fromGrid) +
       rotations(flipHorizontal(fromGrid))
     }
 
-    input.flatMap(l => {
+    return input.flatMap { l ->
       // ../.. => ###/.##/#..
       val from = l.substring(0, l.indexOf('=') - 1)
       val to = l.substring(l.indexOf('=') + 3)
-      val fromGrid = from.split('/').map(_.toCharArray)
-      val toGrid = to.split('/').map(_.toCharArray)
+      val fromGrid = from.split('/').map { it.toCharArray() }.toTypedArray()
+      val toGrid = to.split('/').map { it.toCharArray() }.toTypedArray()
 
-      flips(fromGrid).map(g => Rule(Grid.toString(g), toGrid))
-    })
-  } ensuring(_.size >= input.size)
+      flips(fromGrid).map { g -> Rule(gridToString(g), toGrid) }
+    }
+  } //ensuring(_.size >= input.size)
 
-  def flipHorizontal(thiz: Grid): Grid = {
-    thiz.reverse
-  }
+  fun copy(row: Int, col: Int, size: Int, thiz: Grid): Grid {
+    require(row in 0..thiz.size-1) { "row >= 0 && row < thiz.size failed; with >${row}<" }
+    require(col in 0..thiz.size-1) { "col >= 0 && col < thiz.size failed; with >${col}<" }
+    require(size in 1..thiz.size) { "size >= 1 && size <= thiz.size; with >${size}<" }
 
-  def rotateClockWise(thiz: Grid): Grid = {
-    thiz.transpose.map(_.reverse)
-  }
-
-  def copy(row: Int, col: Int, size: Int, thiz: Grid): Grid = {
-    require(row >= 0 && row < thiz.size, s"row >= 0 && row < thiz.size failed; with >${row}<")
-    require(col >= 0 && col < thiz.size, s"col >= 0 && col < thiz.size failed; with >${col}<")
-    require(size >= 1 && size <= thiz.size, s"size >= 1 && size <= thiz.size; with >${size}<")
-
-    (for {
-      r <- row until row + size
-    } yield {
-      for {
-        c <- col until col + size
-      } yield {
-        thiz(r)(c)
+    val copied = Array(size) { CharArray(size) }
+    var rr = 0
+    for(r in row..row + size - 1) {
+      var cc = 0
+      for (c in col..col + size - 1) {
+        copied[rr][cc] = thiz[r][c]
+        cc =+ 1
       }
-    }).map(_.toArray).toArray
-  } ensuring(_.size == size)
+      rr =+ 1
+    }
 
-  def divide(thiz: Grid): List[Grid] = {
+    return copied
+  } //ensuring(_.size == size)
+
+  fun divide(thiz: Grid): List<Grid> {
     val stepSize =
       if(thiz.size % 2 == 0) 2
       else if(thiz.size % 3 == 0) 3
@@ -95,62 +118,66 @@ object Day21 {
         0
       }
 
-    val grids = for {
-      row <- 0 until thiz.size by stepSize
-      col <- 0 until thiz.size by stepSize
-    } yield {
-      copy(row, col, stepSize, thiz)
-    }
-
-    grids.toList
-  } ensuring(gs => gs.nonEmpty && gs.head.size <= thiz.size)
-
-  def enhance(thiz: List[Grid], rules: List[Rule]): List[Grid] = {
-    require(thiz.nonEmpty, "thiz.nonEmpty failed")
-    require(rules.nonEmpty, "rules.nonEmpty failed")
-
-    val result = thiz.map { g => {
-      val rule = rules.find(r => r.from == Grid.toString(g)).getOrElse {
-        assert(false)
-        Rule("", Array(Array.emptyCharArray))
+    val grids = listOf<Grid>()
+    for(row in 0..thiz.size-1 step stepSize) {
+      for(col in 0..thiz.size-1 step stepSize) {
+        grids + listOf(copy(row, col, stepSize, thiz))
       }
-      rule.to
-    }}
-
-    result
-  } ensuring(gs => gs.nonEmpty && gs.head.size > thiz.head.size)
-
-  def join(thiz: List[Grid]): Grid = {
-    require(thiz.nonEmpty, "thiz.nonEmpty failed")
-
-    val grid = for {
-      group <- thiz.grouped(Math.sqrt(thiz.size).toInt)
-      row <- 0 until thiz(0).size
-      line = group.map(g => g(row)).flatten
-    } yield {
-      line
     }
 
-    grid.map(_.toArray).toArray
-  } ensuring(g => g.size == Math.sqrt(thiz.size).toInt * thiz(0).size)
+    return grids
+  } //ensuring(gs => gs.nonEmpty && gs.head.size <= thiz.size)
 
-  def run(current: Grid, rules: List[Rule], iterations: Int): Grid = {
-    require(current.nonEmpty, "current.nonEmpty failed")
-    require(rules.nonEmpty, "rules.nonEmpty failed")
+  fun enhance(thiz: List<Grid>, rules: List<Rule>): List<Grid> {
+    require(thiz.isNotEmpty()) { "thiz.nonEmpty failed" }
+    require(rules.isNotEmpty()) { "rules.nonEmpty failed" }
 
-    if(iterations <= 0) current
+    val result = thiz.map { g ->
+      val rule = rules.find { r -> r.from == gridToString(g) }!!
+      rule.to
+    }
+
+    return result
+  } //ensuring(gs => gs.nonEmpty && gs.head.size > thiz.head.size)
+
+  fun join(thiz: List<Grid>): Grid {
+    require(thiz.isNotEmpty()) { "thiz.nonEmpty failed" }
+
+    val rows = thiz.first().size
+    val windowSize = Math.sqrt(thiz.size.toDouble()).toInt()
+    val grids2Dim = thiz.windowed(windowSize, windowSize)
+
+    val grid = emptyArray<CharArray>()
+    for(gs in grids2Dim) {
+      val line = emptyArray<Char>().toCharArray()
+      for(r in 0..rows-1) {
+        for (g in gs) {
+          line.plus(g[r])
+        }
+      }
+      grid.plus(line)
+    }
+
+    return grid
+  } //ensuring(g => g.size == Math.sqrt(thiz.size).toInt * thiz(0).size)
+
+  fun run(current: Grid, rules: List<Rule>, iterations: Int): Grid {
+    require(current.isNotEmpty()) { "current.nonEmpty failed" }
+    require(rules.isNotEmpty()) { "rules.nonEmpty failed" }
+
+    return if(iterations <= 0) current
     else run(join(enhance(divide(current), rules)), rules, iterations - 1)
   }
 
   object Part1 {
-    def solve(input: List[String]): Int = {
-      run(start, parseInput(input), 5).flatten.count(_ == '#')
+    fun solve(input: List<String>): Int {
+      return run(start, parseInput(input), 5).flatMap { it.asIterable() }.count { it == '#' }
     }
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      run(start, parseInput(input), 18).flatten.count(_ == '#')
+    fun solve(input: List<String>): Int {
+      return run(start, parseInput(input), 18).flatMap { it.asIterable() }.count { it == '#' }
     }
   }
 }

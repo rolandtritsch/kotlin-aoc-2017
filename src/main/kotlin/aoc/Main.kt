@@ -27,6 +27,7 @@ import aoc.day21.Day21
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
 
+/*
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
   println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
   println("Day02: Part1: checksum -> ${Day02.Part1.solve(Day02.input)}")
@@ -67,6 +68,7 @@ fun main(args: Array<String>): Unit {
   println("Day19: Part2: steps -> ${Day19.Part2.solve(Day19.input)}")
   println("Day20: Part1: findclosest -> ${Day20.Part1.solve(Day20.input)}")
   println("Day20: Part2: nocollisions -> ${Day20.Part2.solve(Day20.input)}")
+*/
   println("Day21: Part1: after5 -> ${Day21.Part1.solve(Day21.input)}")
   println("Day21: Part2: after18 -> ${Day21.Part2.solve(Day21.input)}")
 /*
