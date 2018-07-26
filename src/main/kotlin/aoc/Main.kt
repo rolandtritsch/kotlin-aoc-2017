@@ -69,9 +69,9 @@ fun main(args: Array<String>): Unit {
   println("Day20: Part2: nocollisions -> ${Day20.Part2.solve(Day20.input)}")
   println("Day21: Part1: after5 -> ${Day21.Part1.solve(Day21.input)}")
   println("Day21: Part2: after18 -> ${Day21.Part2.solve(Day21.input)}")
-/*
   println("Day22: Part1: simple -> ${Day22.Part1.solve(Day22.input)}")
   println("Day22: Part2: advanced -> ${Day22.Part2.solve(Day22.input)}")
+/*
   println("Day23: Part1: run -> ${Day23.Part1.solve(Day23.input)}")
   println("Day23: Part2: run -> ${Day23.Part2.solve(Day23.input)}")
   println("Day24: Part1: strongest -> ${Day24.Part1.solve(Day24.input)}")
