@@ -101,9 +101,9 @@ object Day21 {
       var cc = 0
       for (c in col..col + size - 1) {
         copied[rr][cc] = thiz[r][c]
-        cc =+ 1
+        cc = cc + 1
       }
-      rr =+ 1
+      rr = rr + 1
     }
 
     return copied
@@ -118,10 +118,10 @@ object Day21 {
         0
       }
 
-    val grids = listOf<Grid>()
+    var grids = emptyList<Grid>()
     for(row in 0..thiz.size-1 step stepSize) {
       for(col in 0..thiz.size-1 step stepSize) {
-        grids + listOf(copy(row, col, stepSize, thiz))
+        grids = grids + listOf(copy(row, col, stepSize, thiz))
       }
     }
 
@@ -147,15 +147,15 @@ object Day21 {
     val windowSize = Math.sqrt(thiz.size.toDouble()).toInt()
     val grids2Dim = thiz.windowed(windowSize, windowSize)
 
-    val grid = emptyArray<CharArray>()
+    var grid = emptyArray<CharArray>()
     for(gs in grids2Dim) {
-      val line = emptyArray<Char>().toCharArray()
       for(r in 0..rows-1) {
+        var line = emptyArray<Char>().toCharArray()
         for (g in gs) {
-          line.plus(g[r])
+          line = line + g[r]
         }
+        grid = grid.plus(line)
       }
-      grid.plus(line)
     }
 
     return grid
