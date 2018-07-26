@@ -11,9 +11,9 @@ before_install:
   - curl -s "https://get.sdkman.io" | bash
   - source "$HOME/.sdkman/bin/sdkman-init.sh"
   - sdk version
-  - sdk install gradle 4.7
+  - sdk install gradle 4.9
   - gradle --version
 
 script:
-  - gradle test
-  - gradle run
+  - travis_wait 60 gradle test
+  - travis_wait 60 gradle run
