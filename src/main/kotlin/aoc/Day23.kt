@@ -1,4 +1,4 @@
-package aoc
+package aoc.day23
 
 /** Problem: [[http://adventofcode.com/2017/day/23]]
   *
@@ -73,120 +73,135 @@ package aoc
   */
 object Day23 {
 
-  val input = Util.readInput("Day23input.txt")
+  val input = aoc.Util.readInput("Day23input.txt")
 
-  sealed abstract class Operation
-  case class Set(register: Char, value: Long) extends Operation
-  case class SetR(register: Char, value: Char) extends Operation
-  case class Sub(register: Char, value: Long) extends Operation
-  case class SubR(register: Char, value: Char) extends Operation
-  case class Mul(register: Char, value: Long) extends Operation
-  case class MulR(register: Char, value: Char) extends Operation
-  case class JumpIfNotZero(register: Char, value: Int) extends Operation
+  sealed class Operation {
+    data class Set(val register: Char, val value: Long) : Operation()
+    data class SetR(val register: Char, val value: Char) : Operation()
+    data class Sub(val register: Char, val value: Long) : Operation()
+    data class SubR(val register: Char, val value: Char) : Operation()
+    data class Mul(val register: Char, val value: Long) : Operation()
+    data class MulR(val register: Char, val value: Char) : Operation()
+    data class JumpIfNotZero(val register: Char, val value: Int) : Operation()
+  }
 
-  val registerRange = ('a' to 'h').toList
+  val registerRange = ('a'..'h').toList()
 
-  def parseInput(input: List[String]): List[Operation] = {
-    require(input.nonEmpty, "input.nonEmpty failed")
+  fun parseInput(input: List<String>): List<Operation> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-    input.map(l => {
-      val tokens = l.split(' ')
+    return input.map { l ->
+      val tokens = l.split(" ")
       assert(tokens.size >= 2)
-      val operation = tokens(0)
-      val register = tokens(1).charAt(0)
-      operation match {
-        case "set" => {
+      val operation = tokens[0]
+      val register = tokens[1][0]
+      when(operation) {
+        "set" -> {
           assert(tokens.size == 3)
-          val operand = tokens(2)
-          if(registerRange.contains(operand.charAt(0))) SetR(register, operand.charAt(0))
-          else Set(register, operand.toLong)
+          val operand = tokens[2]
+          if(registerRange.contains(operand[0])) Operation.SetR(register, operand[0])
+          else Operation.Set(register, operand.toLong())
         }
-        case "sub" => {
+        "sub" -> {
           assert(tokens.size == 3)
-          val operand = tokens(2)
-          if(registerRange.contains(operand.charAt(0))) SubR(register, operand.charAt(0))
-          else Sub(register, operand.toLong)
+          val operand = tokens[2]
+          if(registerRange.contains(operand[0])) Operation.SubR(register, operand[0])
+          else Operation.Sub(register, operand.toLong())
         }
-        case "mul" => {
+        "mul" -> {
           assert(tokens.size == 3)
-          val operand = tokens(2)
-          if(registerRange.contains(operand.charAt(0))) MulR(register, operand.charAt(0))
-          else Mul(register, operand.toLong)
+          val operand = tokens[2]
+          if(registerRange.contains(operand[0])) Operation.MulR(register, operand[0])
+          else Operation.Mul(register, operand.toLong())
         }
-        case "jnz" => {
+        "jnz" -> {
           assert(tokens.size == 3)
-          val operand = tokens(2)
-          JumpIfNotZero(register, operand.toInt)
+          val operand = tokens[2]
+          Operation.JumpIfNotZero(register, operand.toInt())
         }
-        case _ => {
+        else -> {
           assert(false)
-          Set(' ', 0)
+          Operation.Set(' ', 0)
         }
       }
-    })
-  } ensuring(_.nonEmpty, "_.nonEmpty failed")
+    }
+  } //ensuring(_.nonEmpty, "_.nonEmpty failed")
 
-  case class Program(counter: Int, instructions: List[Operation], register: Map[Char, Long], instructionCounter: Map[String, Long])
+  data class Program(val counter: Int, val instructions: List<Operation>, val register: MutableMap<Char, Long>, val instructionCounter: MutableMap<String, Long>)
 
-  def run(program: Program, done: Program => Boolean, exit: Program => Long): Long = {
-    if(done(program)) exit(program)
+  tailrec fun run(program: Program, done: (Program) -> Boolean, exit: (Program) -> Long): Long {
+    return if(done(program)) exit(program)
     else {
-      val next = program.instructions(program.counter) match {
-        case Set(r, v) => {
+      val current = program.instructions[program.counter]
+      val next = when(current) {
+        is Operation.Set -> {
+          program.register[current.register] = current.value
+          program.instructionCounter["set"] = program.instructionCounter.getValue("set") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> v),
-            program.instructionCounter + ("set" -> (program.instructionCounter("set") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case SetR(r, v) => {
+        is Operation.SetR -> {
+          program.register[current.register] = program.register.getValue(current.value)
+          program.instructionCounter["set"] = program.instructionCounter.getValue("set") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> program.register(v)),
-            program.instructionCounter + ("set" -> (program.instructionCounter("set") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case Sub(r, v) => {
+        is Operation.Sub -> {
+          program.register[current.register] = program.register.getValue(current.register) - current.value
+          program.instructionCounter["sub"] = program.instructionCounter.getValue("sub") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> (program.register(r) - v)),
-            program.instructionCounter + ("sub" -> (program.instructionCounter("sub") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case SubR(r, v) => {
+        is Operation.SubR -> {
+          program.register[current.register] = program.register.getValue(current.register) - program.register.getValue(current.value)
+          program.instructionCounter["sub"] = program.instructionCounter.getValue("sub") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> (program.register(r) - program.register(v))),
-            program.instructionCounter + ("sub" -> (program.instructionCounter("sub") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case Mul(r, v) => {
+        is Operation.Mul -> {
+          program.register[current.register] = program.register.getValue(current.register) * current.value
+          program.instructionCounter["mul"] = program.instructionCounter.getValue("mul") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> (program.register(r) * v)),
-            program.instructionCounter + ("mul" -> (program.instructionCounter("mul") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case MulR(r, v) => {
+        is Operation.MulR -> {
+          program.register[current.register] = program.register.getValue(current.register) * program.register.getValue(current.value)
+          program.instructionCounter["mul"] = program.instructionCounter.getValue("mul") + 1
           Program(
             program.counter + 1,
             program.instructions,
-            program.register + (r -> (program.register(r) * program.register(v))),
-            program.instructionCounter + ("mul" -> (program.instructionCounter("mul") + 1))
+            program.register,
+            program.instructionCounter
           )
         }
-        case JumpIfNotZero(r, v) => {
-          if(program.register(r) != 0) {
+        is Operation.JumpIfNotZero -> {
+          program.instructionCounter["jnz"] = program.instructionCounter.getValue("jnz") + 1
+          if(program.register.getValue(current.register) != 0L) {
             Program(
-              program.counter + v,
+              program.counter + current.value,
               program.instructions,
               program.register,
-              program.instructionCounter + ("jnz" -> (program.instructionCounter("jnz") + 1))
+              program.instructionCounter
             )
           }
           else {
@@ -194,7 +209,7 @@ object Day23 {
               program.counter + 1,
               program.instructions,
               program.register,
-              program.instructionCounter + ("jnz" -> (program.instructionCounter("jnz") + 1))
+              program.instructionCounter
             )
           }
         }
@@ -204,26 +219,22 @@ object Day23 {
   }
 
   object Part1 {
-    def done(p: Program) = p.counter < 0 || p.counter >= p.instructions.size
-    def exit(p: Program) = p.instructionCounter("mul")
+    fun done(p: Program) = p.counter < 0 || p.counter >= p.instructions.size
+    fun exit(p: Program) = p.instructionCounter["mul"]!!
 
-    val program = Program(0, parseInput(input), Map.empty[Char, Long].withDefaultValue(0), Map.empty[String, Long].withDefaultValue(0))
+    val program = Program(0, parseInput(input), emptyMap<Char, Long>().toMutableMap().withDefault { 0 }, emptyMap<String, Long>().toMutableMap().withDefault { 0 })
 
-    def solve(input: List[String]): Long = {
-      run(program, done, exit)
-    }
+    fun solve(): Long = run(program, ::done, ::exit)
   }
 
   object Part2 {
-    def findPrime(n: Int): Boolean = !(2 until n).exists(x => n % x == 0)
+    fun findPrime(n: Int): Boolean = !(2..n-1).any { x -> n % x == 0 }
 
     val seed = 84
     val start = seed * 100 + 100000
     val end = start + 17000
     val stepsize = 17
 
-    def solve(input: List[String]): Long = {
-      (start to end by stepsize).count(!findPrime(_))
-    }
+    fun solve(): Long = (start..end step stepsize).count { !findPrime(it) }.toLong()
   }
 }
