@@ -1,4 +1,4 @@
-package aoc
+package aoc.day22
 
 /** Problem: [[http://adventofcode.com/2017/day/22]]
   *
@@ -15,12 +15,10 @@ package aoc
   */
 object Day22 {
 
-  import scala.collection.mutable
+  val input = aoc.Util.readInput("Day22input.txt")
 
-  val input = Util.readInput("Day22input.txt")
-
-  def parseInput(input: List[String]): Array[Array[Char]] = {
-    input.map(_.toCharArray).toArray
+  fun parseInput(input: List<String>): Array<CharArray> {
+    return input.map { it.toCharArray() }.toTypedArray()
   }
 
   object Default {
@@ -29,22 +27,8 @@ object Day22 {
   }
 
   abstract class Grid(private val dimension: Int) {
-    protected val grid = Array.fill(dimension)(mutable.ArrayBuffer.fill(dimension)(State.CLEAN))
-    protected var currentPosition = (midPoint, midPoint)
-    protected var currentDirection = Direction.UP
-    protected def currentIsInfected = grid(currentPosition._1)(currentPosition._2) == State.INFECTED
-    protected def turnLeft = currentDirection match {
-      case Direction.UP => Direction.LEFT
-      case Direction.DOWN => Direction.RIGHT
-      case Direction.LEFT => Direction.DOWN
-      case Direction.RIGHT => Direction.UP
-    }
-    protected def turnRight = currentDirection match {
-      case Direction.UP => Direction.RIGHT
-      case Direction.DOWN => Direction.LEFT
-      case Direction.LEFT => Direction.UP
-      case Direction.RIGHT => Direction.DOWN
-    }
+    var numOfTicks = 0
+    var numOfInfections = 0
 
     object State {
       val CLEAN = '.'
@@ -53,9 +37,6 @@ object Day22 {
       val FLAGGED = 'F'
     }
 
-    var numOfTicks = 0
-    var numOfInfections = 0
-
     object Direction {
       val UP = "UP"
       val DOWN = "DOWN"
@@ -63,109 +44,132 @@ object Day22 {
       val RIGHT = "RIGHT"
     }
 
-    def midPoint: Int = grid.size / 2
+    fun midPoint(): Int = grid.size / 2
 
-    def mapInput(input: Array[Array[Char]]): Grid = {
+    protected val grid = Array(dimension, {
+      Array(dimension, { State.CLEAN })
+    })
+
+    protected var currentPosition = Pair(midPoint(), midPoint())
+    protected var currentDirection = Direction.UP
+    protected fun currentIsInfected() = grid[currentPosition.first][currentPosition.second] == State.INFECTED
+
+    protected fun turnLeft() = when(currentDirection) {
+      Direction.UP -> Direction.LEFT
+      Direction.DOWN -> Direction.RIGHT
+      Direction.LEFT -> Direction.DOWN
+      Direction.RIGHT -> Direction.UP
+      else -> { assert(false) { "Unknown direction" }; Direction.UP }
+    }
+
+    protected fun turnRight() = when(currentDirection) {
+      Direction.UP -> Direction.RIGHT
+      Direction.DOWN -> Direction.LEFT
+      Direction.LEFT -> Direction.UP
+      Direction.RIGHT -> Direction.DOWN
+      else -> { assert(false) { "Unknown direction" }; Direction.UP }
+    }
+
+    fun mapInput(input: Array<CharArray>): Grid {
       val offset = (grid.size - input.size) / 2
 
-      for {
-        r <- 0 until input.size
-        c <- 0 until input.size
-      } grid(r + offset)(c + offset) = input(r)(c)
+      for(r in 0..input.size-1) {
+        for (c in 0..input.size - 1) {
+          grid[r + offset][c + offset] = input[r][c]
+        }
+      }
 
-      this
+      return this
     }
 
-    def mkString(radius: Int): String = {
-      val area = for {
-        r <- midPoint - radius to midPoint + radius
-      } yield for {
-        c <- midPoint - radius to midPoint + radius
-      } yield grid(r)(c)
-      area.map(_.mkString).mkString("\n")
-    }
-
-    def tick: Grid
+    abstract fun tick(): Grid
   }
 
-  case class SimpleGrid(private val d: Int) extends Grid(d) {
-    def tick: SimpleGrid = {
+  data class SimpleGrid(private val d: Int) : Grid(d) {
+    override fun tick(): SimpleGrid {
       numOfTicks = numOfTicks + 1
       val (row, col) = currentPosition
 
-      currentDirection = grid(row)(col) match {
-        case State.CLEAN => turnLeft
-        case State.INFECTED => turnRight
+      currentDirection = when(grid[row][col]) {
+        State.CLEAN -> turnLeft()
+        State.INFECTED -> turnRight()
+        else -> { assert(false) { "Unknown state" }; Direction.UP }
       }
 
-      grid(row)(col) = grid(row)(col) match {
-        case State.CLEAN => {numOfInfections = numOfInfections + 1; State.INFECTED}
-        case State.INFECTED => State.CLEAN
+      grid[row][col] = when(grid[row][col]) {
+        State.CLEAN -> { numOfInfections = numOfInfections + 1; State.INFECTED }
+        State.INFECTED -> State.CLEAN
+        else -> { assert(false) { "Unknown state" }; State.CLEAN }
       }
 
-      currentPosition = currentDirection match {
-        case Direction.UP => (row - 1, col)
-        case Direction.DOWN => (row + 1, col)
-        case Direction.LEFT => (row, col - 1)
-        case Direction.RIGHT => (row, col + 1)
+      currentPosition = when(currentDirection) {
+        Direction.UP -> Pair(row - 1, col)
+        Direction.DOWN -> Pair(row + 1, col)
+        Direction.LEFT -> Pair(row, col - 1)
+        Direction.RIGHT -> Pair(row, col + 1)
+        else -> { assert(false) { "Unknown direction" }; Pair(0, 0) }
       }
 
-      this
+      return this
     }
   }
 
-  case class AdvancedGrid(private val d: Int) extends Grid(d) {
-    def doNotTurn = currentDirection
-    def turnAround = currentDirection match {
-      case Direction.UP => Direction.DOWN
-      case Direction.DOWN => Direction.UP
-      case Direction.LEFT => Direction.RIGHT
-      case Direction.RIGHT => Direction.LEFT
+  data class AdvancedGrid(private val d: Int) : Grid(d) {
+    fun doNotTurn() = currentDirection
+    fun turnAround() = when(currentDirection) {
+      Direction.UP -> Direction.DOWN
+      Direction.DOWN -> Direction.UP
+      Direction.LEFT -> Direction.RIGHT
+      Direction.RIGHT -> Direction.LEFT
+      else -> { assert(false) { "Unknown direction" }; Direction.UP }
     }
 
-    def tick: AdvancedGrid = {
+    override fun tick(): AdvancedGrid {
       numOfTicks = numOfTicks + 1
       val (row, col) = currentPosition
 
-      currentDirection = grid(row)(col) match {
-        case State.CLEAN => turnLeft
-        case State.WEAKEND => doNotTurn
-        case State.INFECTED => turnRight
-        case State.FLAGGED => turnAround
+      currentDirection = when(grid[row][col]) {
+        State.CLEAN -> turnLeft()
+        State.WEAKEND -> doNotTurn()
+        State.INFECTED -> turnRight()
+        State.FLAGGED -> turnAround()
+        else -> { assert(false) { "Unknown state" }; Direction.UP }
       }
 
-      grid(row)(col) = grid(row)(col) match {
-        case State.CLEAN => State.WEAKEND
-        case State.WEAKEND => {numOfInfections = numOfInfections + 1; State.INFECTED}
-        case State.INFECTED => State.FLAGGED
-        case State.FLAGGED => State.CLEAN
+      grid[row][col] = when(grid[row][col]) {
+        State.CLEAN -> State.WEAKEND
+        State.WEAKEND -> { numOfInfections = numOfInfections + 1; State.INFECTED }
+        State.INFECTED -> State.FLAGGED
+        State.FLAGGED -> State.CLEAN
+        else -> { assert(false) { "Unknown state" }; State.CLEAN }
       }
 
-      currentPosition = currentDirection match {
-        case Direction.UP => (row - 1, col)
-        case Direction.DOWN => (row + 1, col)
-        case Direction.LEFT => (row, col - 1)
-        case Direction.RIGHT => (row, col + 1)
+      currentPosition = when(currentDirection) {
+        Direction.UP -> Pair(row - 1, col)
+        Direction.DOWN -> Pair(row + 1, col)
+        Direction.LEFT -> Pair(row, col - 1)
+        Direction.RIGHT -> Pair(row, col + 1)
+        else -> { assert(false) { "Unknown direction" }; Pair(0, 0) }
       }
 
-      this
+      return this
     }
   }
 
-  def run(grid: Grid, ticks: Int): Grid = {
-    if(ticks <= 0) grid
-    else run(grid.tick, ticks - 1)
+  tailrec fun run(grid: Grid, ticks: Int): Grid {
+    return if(ticks <= 0) grid
+    else run(grid.tick(), ticks - 1)
   }
 
   object Part1 {
-    def solve(input: List[String]): Int = {
-      run(Day22.SimpleGrid(1001).mapInput(parseInput(input)), Default.ticks1).numOfInfections
+    fun solve(input: List<String>): Int {
+      return run(SimpleGrid(1001).mapInput(parseInput(input)), Default.ticks1).numOfInfections
     }
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      run(Day22.AdvancedGrid(1001).mapInput(parseInput(input)), Default.ticks2).numOfInfections
+    fun solve(input: List<String>): Int {
+      return run(AdvancedGrid(1001).mapInput(parseInput(input)), Default.ticks2).numOfInfections
     }
   }
 }

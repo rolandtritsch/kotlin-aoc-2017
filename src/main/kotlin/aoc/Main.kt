@@ -23,10 +23,11 @@ import aoc.day18.Day18
 import aoc.day19.Day19
 import aoc.day20.Day20
 import aoc.day21.Day21
+import aoc.day22.Day22
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
-
+  
   println("Day01: Part1: captcha -> ${Day01.Part1.solve(Day01.input)}")
   println("Day01: Part2: captcha -> ${Day01.Part2.solve(Day01.input)}")
   println("Day02: Part1: checksum -> ${Day02.Part1.solve(Day02.input)}")
