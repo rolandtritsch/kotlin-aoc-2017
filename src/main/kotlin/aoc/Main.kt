@@ -25,6 +25,7 @@ import aoc.day20.Day20
 import aoc.day21.Day21
 import aoc.day22.Day22
 import aoc.day23.Day23
+import aoc.day24.Day24
 
 fun main(args: Array<String>): Unit {
   require(args.isEmpty()) { "args.isEmpty() failed; with >${args.size}<" }
@@ -75,9 +76,9 @@ fun main(args: Array<String>): Unit {
   println("Day22: Part2: advanced -> ${Day22.Part2.solve(Day22.input)}")
   println("Day23: Part1: run -> ${Day23.Part1.solve()}")
   println("Day23: Part2: run -> ${Day23.Part2.solve()}")
-/*
   println("Day24: Part1: strongest -> ${Day24.Part1.solve(Day24.input)}")
   println("Day24: Part2: longest -> ${Day24.Part2.solve(Day24.input)}")
+/*
   println("Day25: Part1: run -> ${Day25.Part1.solve(Day25.input)}")
 */
 }
