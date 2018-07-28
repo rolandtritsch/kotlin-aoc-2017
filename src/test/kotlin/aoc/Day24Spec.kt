@@ -3,11 +3,9 @@ package aoc.day24
 import io.kotlintest.*
 import io.kotlintest.specs.StringSpec
 
-object JustThisOne : Tag()
-
 class Day24Spec : StringSpec({
 
-  "should solve()".config(tags = setOf(JustThisOne)) {
+  "should solve()" {
     "part1" {
       Day24.Part1.solve(Day24.input) shouldBe 1695
     }

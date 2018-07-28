@@ -1,4 +1,4 @@
-package aoc
+package aoc.day24
 
 /** Problem: [[http://adventofcode.com/2017/day/24]]
   *
@@ -21,75 +21,80 @@ package aoc
   */
  object Day24 {
 
-  val input = Util.readInput("Day24input.txt")
+  val input = aoc.Util.readInput("Day24input.txt")
 
-  case class Component(left: Int, right: Int) {
-    def matches(port: Int) = left == port || right == port
+  data class Component(val left: Int, val right: Int) {
+    fun matches(port: Int) = left == port || right == port
 
-    def appendTo(l: List[Component]): List[Component] = {
-      if (l.last.right == left) l :+ Component(left, right)
-      else if (l.last.right == right) l :+ Component(right, left)
+    fun appendTo(l: List<Component>): List<Component> {
+      return if(l.last().right == left) l + Component(left, right)
+      else if(l.last().right == right) l + Component(right, left)
       else {
-        assert(false); List()
+        assert(false); emptyList()
       }
     }
   }
 
-  def parseInput(input: List[String]): List[Component] = {
-    require(input.nonEmpty, "input.nonEmpty failed")
+  fun parseInput(input: List<String>): List<Component> {
+    require(input.isNotEmpty()) { "input.nonEmpty failed" }
 
-    input.map(l => {
-      val tokens = l.split('/')
+    return input.map { l ->
+      val tokens = l.split("/")
       assert(tokens.size == 2)
-      val port1 = tokens(0).toInt
-      val port2 = tokens(1).toInt
-      if (port1 <= port2) Component(port1, port2)
+      val port1 = tokens[0].toInt()
+      val port2 = tokens[1].toInt()
+      if(port1 <= port2) Component(port1, port2)
       else Component(port2, port1)
-    }).sortBy(_.left)
-  } ensuring(_.nonEmpty, "_.nonEmpty failed")
+    }.sortedWith(compareBy { it.left })
+  } //ensuring(_.nonEmpty, "_.nonEmpty failed")
 
-  def findZero(components: List[Component]): List[Component] = {
-    require(components.nonEmpty, "components.nonEmpty failed")
+  fun findZero(components: List<Component>): List<Component> {
+    require(components.isNotEmpty()) { "components.nonEmpty failed" }
 
-    components.filter(c => c.left == 0)
-  } ensuring(_.size >= 1, "_.size >= 1 failed")
+    return components.filter { c -> c.left == 0 }
+  } //ensuring(_.size >= 1, "_.size >= 1 failed")
 
-  def findPath(head: List[Component], rest: List[Component], all: List[List[Component]]): List[List[Component]] = {
-    if (rest.isEmpty) all :+ head
+  fun findPath(head: List<Component>, rest: List<Component>, all: List<List<Component>>): List<List<Component>> {
+    return if(rest.isEmpty()) all + listOf(head)
     else {
-      rest.filter(_.matches(head.last.right)) match {
-        case Nil => all :+ head
-        case cs => cs.foldLeft(all)((acc, next) => findPath(next.appendTo(head), rest.diff(List(next)), acc))
-      }
+      val matches = rest.filter { it.matches(head.last().right) }
+      if(matches.isEmpty()) all + listOf(head)
+      else matches.fold(all, { acc, next ->
+        findPath(next.appendTo(head), rest.minus(listOf(next)), acc)
+      })
     }
   }
 
-  def findPaths(components: List[Component]): List[List[Component]] = {
-    findZero(components).flatMap(z => findPath(List(z), components.diff(List(z)), List()))
+  fun findPaths(components: List<Component>): List<List<Component>> {
+    return findZero(components).flatMap { z -> findPath(listOf(z), components.minus(listOf(z)), emptyList()) }
   }
 
-  def findStrongestPath(paths: List[List[Component]]): (Int, List[Component]) = {
-    val strength = paths.map(p => (p.foldLeft(0)((acc, c) => acc + c.left + c.right), p))
-    strength.maxBy(_._1)
-  } ensuring(_._1 >= 0, "_._1 >= 0 failed")
+  fun findStrongestPath(paths: List<List<Component>>): Pair<Int, List<Component>> {
+    val strength = paths.map { p ->
+      Pair(p.fold(0, { acc, c -> acc + c.left + c.right }), p)
+    }
+    return strength.maxBy { it.first }!!
+  } //ensuring(_._1 >= 0, "_._1 >= 0 failed")
 
-  def findLongestPath(paths: List[List[Component]]): (Int, Int, List[Component]) = {
-    val length = paths.map(p => (p.size, p.foldLeft(0)((acc, c) => acc + c.left + c.right), p))
-    val maxLength = length.maxBy(_._1)._1
-    length.filter(l => l._1 == maxLength).maxBy(_._2)
-  } ensuring(_._2 >= 0, "_._2 >= 0 failed")
+  fun findLongestPath(paths: List<List<Component>>): Pair<Int, Int> {
+    val length = paths.map { p ->
+      Pair(p.size, p.fold(0, { acc, c -> acc + c.left + c.right }))
+    }
+    val maxLength = length.maxBy { it.first }!!.first
+    return length.filter { l -> l.first == maxLength }.maxBy { it.second }!!
+  } //ensuring(_._2 >= 0, "_._2 >= 0 failed")
 
   object Part1 {
-    def solve(input: List[String]): Int = {
+    fun solve(input: List<String>): Int {
       val (maxStrength, _) = findStrongestPath(findPaths(parseInput(input)))
-      maxStrength
+      return maxStrength
     }
   }
 
   object Part2 {
-    def solve(input: List[String]): Int = {
-      val (_, maxLength, _) = findLongestPath(findPaths(parseInput(input)))
-      maxLength
+    fun solve(input: List<String>): Int {
+      val (_, maxLength) = findLongestPath(findPaths(parseInput(input)))
+      return maxLength
     }
   }
 }
