@@ -1,4 +1,4 @@
-package aoc
+package aoc.day25
 
 /** Problem: [[http://adventofcode.com/2017/day/25]]
   *
@@ -13,86 +13,85 @@ package aoc
   *
   */
 object Day25 {
-  import scala.collection.mutable
 
   //val in = Util.readInput("Day25input.txt").head.toInt
   val input = 12667664
 
-  case class Tape(private val init: mutable.ArrayBuffer[Int]) {
-    def update(position: Int, value: Int): Tape = {
-      init(position) = value
-      this
+  data class Tape(private val init: Array<Int>) {
+    fun update(position: Int, value: Int): Tape {
+      init[position] = value
+      return this
     }
 
-    def apply(position: Int) = init(position)
+    fun get(position: Int) = init[position]
 
     val size = init.size
 
-    def checkSum: Int = init.count(_ == 1)
+    fun checkSum(): Int = init.count { it == 1 }
   }
 
-  abstract class State(programCounter: Int, tape: Tape) {
-    def tick: State
-    def checkSum = tape.checkSum
+  abstract class State(open val programCounter: Int, open val tape: Tape) {
+    abstract fun tick(): State
+    fun checkSum() = tape.checkSum()
   }
 
-  case class StateA(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateB(programCounter + 1, tape.update(programCounter, 1))
-      else if(tape(programCounter) == 1) StateC(programCounter - 1, tape.update(programCounter, 0))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateA(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateB(programCounter + 1, tape.update(programCounter, 1))
+      else if(tape.get(programCounter) == 1) StateC(programCounter - 1, tape.update(programCounter, 0))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  case class StateB(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateA(programCounter - 1, tape.update(programCounter, 1))
-      else if(tape(programCounter) == 1) StateD(programCounter + 1, tape.update(programCounter, 1))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateB(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateA(programCounter - 1, tape.update(programCounter, 1))
+      else if(tape.get(programCounter) == 1) StateD(programCounter + 1, tape.update(programCounter, 1))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  case class StateC(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateB(programCounter - 1, tape.update(programCounter, 0))
-      else if(tape(programCounter) == 1) StateE(programCounter - 1, tape.update(programCounter, 0))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateC(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateB(programCounter - 1, tape.update(programCounter, 0))
+      else if(tape.get(programCounter) == 1) StateE(programCounter - 1, tape.update(programCounter, 0))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  case class StateD(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateA(programCounter + 1, tape.update(programCounter, 1))
-      else if(tape(programCounter) == 1) StateB(programCounter + 1, tape.update(programCounter, 0))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateD(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateA(programCounter + 1, tape.update(programCounter, 1))
+      else if(tape.get(programCounter) == 1) StateB(programCounter + 1, tape.update(programCounter, 0))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  case class StateE(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateF(programCounter - 1, tape.update(programCounter, 1))
-      else if(tape(programCounter) == 1) StateC(programCounter - 1, tape.update(programCounter, 1))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateE(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateF(programCounter - 1, tape.update(programCounter, 1))
+      else if(tape.get(programCounter) == 1) StateC(programCounter - 1, tape.update(programCounter, 1))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  case class StateF(programCounter: Int, tape: Tape) extends State(programCounter, tape) {
-    def tick: State = {
-      if(tape(programCounter) == 0) StateD(programCounter + 1, tape.update(programCounter, 1))
-      else if(tape(programCounter) == 1) StateA(programCounter + 1, tape.update(programCounter, 1))
-      else {assert(false); StateA(0, Tape(mutable.ArrayBuffer()))}
+  data class StateF(override val programCounter: Int, override val tape: Tape) : State(programCounter, tape) {
+    override fun tick(): State {
+      return if(tape.get(programCounter) == 0) StateD(programCounter + 1, tape.update(programCounter, 1))
+      else if(tape.get(programCounter) == 1) StateA(programCounter + 1, tape.update(programCounter, 1))
+      else { assert(false); StateA(0, Tape(emptyArray())) }
     }
   }
 
-  def run(state: State, steps: Int): State = {
-    if(steps <= 0) state
-    else run(state.tick, steps - 1)
+  tailrec fun run(state: State, steps: Int): State {
+    return if(steps <= 0) state
+    else run(state.tick(), steps - 1)
   }
 
   object Part1 {
-    def solve(input: Int): Int = {
-      val tape = Tape(mutable.ArrayBuffer.fill(100001)(0))
-      run(StateA(tape.size / 2, tape), input).checkSum
+    fun solve(input: Int): Int {
+      val tape = Tape(Array(100001) { 0 })
+      return run(StateA(tape.size / 2, tape), input).checkSum()
     }
   }
 }
