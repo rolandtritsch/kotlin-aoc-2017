@@ -46,10 +46,14 @@ object Day11 {
   } //ensuring(result => result._1 >= 0 && result._2 >= result._1)
 
   object Part1 {
-    fun solve(input: List<String>): Int = calcSteps(input).first
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      calcSteps(input).first
+    }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int = calcSteps(input).second
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      calcSteps(input).second
+    }
   }
 }

@@ -85,16 +85,16 @@ package aoc.day24
   } //ensuring(_._2 >= 0, "_._2 >= 0 failed")
 
   object Part1 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (maxStrength, _) = findStrongestPath(findPaths(parseInput(input)))
-      return maxStrength
+      maxStrength
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (_, maxLength) = findLongestPath(findPaths(parseInput(input)))
-      return maxLength
+      maxLength
     }
   }
 }

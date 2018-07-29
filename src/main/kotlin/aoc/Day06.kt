@@ -59,16 +59,16 @@ object Day06 {
   }
 
   object Part1 {
-    fun solve(banks: List<Int>): Int {
+    fun solve(banks: List<Int>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (lambda, mu) = floyd(banks, Day06::cycle)
-      return lambda + mu
+      lambda + mu
     }
   }
 
   object Part2 {
-    fun solve(banks: List<Int>): Int {
+    fun solve(banks: List<Int>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (lambda, _) = floyd(banks, Day06::cycle)
-      return lambda
+      lambda
     }
   }
 }

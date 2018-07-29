@@ -170,14 +170,14 @@ object Day21 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Int {
-      return run(start, parseInput(input), 5).flatMap { it.asIterable() }.count { it == '#' }
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(start, parseInput(input), 5).flatMap { it.asIterable() }.count { it == '#' }
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
-      return run(start, parseInput(input), 18).flatMap { it.asIterable() }.count { it == '#' }
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(start, parseInput(input), 18).flatMap { it.asIterable() }.count { it == '#' }
     }
   }
 }

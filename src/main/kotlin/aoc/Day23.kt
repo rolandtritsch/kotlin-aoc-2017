@@ -224,7 +224,9 @@ object Day23 {
 
     val program = Program(0, parseInput(input), emptyMap<Char, Long>().toMutableMap().withDefault { 0 }, emptyMap<String, Long>().toMutableMap().withDefault { 0 })
 
-    fun solve(): Long = run(program, ::done, ::exit)
+    fun solve(): Pair<Long, Long> = aoc.Util.measureTimeMillis(0) {
+      run(program, ::done, ::exit)
+    }
   }
 
   object Part2 {
@@ -235,6 +237,8 @@ object Day23 {
     val end = start + 17000
     val stepsize = 17
 
-    fun solve(): Long = (start..end step stepsize).count { !findPrime(it) }.toLong()
+    fun solve(): Pair<Long, Long> = aoc.Util.measureTimeMillis(0) {
+      (start..end step stepsize).count { !findPrime(it) }.toLong()
+    }
   }
 }

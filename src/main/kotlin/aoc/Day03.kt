@@ -96,11 +96,11 @@ object Day03 {
       return cells
     }
 
-    fun solve(cellValueToFind: Int): Int {
+    fun solve(cellValueToFind: Int): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val spiral = cells(moves(firstLevelMoves).flatten().flatten().iterator())
       val coordinates = spiral.find { it.value == cellValueToFind }!!.coordinates
       val distance = calcManhattenDistance(coordinates)
-      return distance
+      distance
     }
 
     fun calcManhattenDistance(coordinates: Pair<Int, Int>): Int {
@@ -145,10 +145,10 @@ object Day03 {
       return cells
     }
 
-    fun solve(cellValueToFind: Int): Int {
+    fun solve(cellValueToFind: Int): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val spiral = cells(moves(firstLevelMoves).flatten().flatten().iterator())
       val nextBiggerValue = spiral.find { it.value > cellValueToFind }!!.value
-      return nextBiggerValue
+      nextBiggerValue
     }
 
     fun calcValue(currentCoordinates: Pair<Int, Int>, valuesSoFar: Map<Pair<Int, Int>, Int>): Int {

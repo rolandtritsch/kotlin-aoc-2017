@@ -58,9 +58,9 @@ object Day10 {
   }
 
   object Part1 {
-    fun solve(input: String): Int {
+    fun solve(input: String): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val hash = knot(input2Lengths(input), seed).hash
-      return hash.get(0) * hash.get(1)
+      hash.get(0) * hash.get(1)
     }
   }
 
@@ -95,8 +95,8 @@ object Day10 {
   }
 
   object Part2 {
-    fun solve(input: String): String {
-      return dense2hex(dense(sparse(encode(input, suffix), seed, rounds).hash))
+    fun solve(input: String): Pair<String, Long> = aoc.Util.measureTimeMillis("") {
+      dense2hex(dense(sparse(encode(input, suffix), seed, rounds).hash))
     }
   }
 }

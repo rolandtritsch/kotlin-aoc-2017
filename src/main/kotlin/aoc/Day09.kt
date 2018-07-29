@@ -69,18 +69,18 @@ object Day09 {
   }
 
   object Part1 {
-    fun solve(input: List<Char>): Int {
+    fun solve(input: List<Char>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val finalState = StateMachine(input).run()
       assert(finalState is OutOfGroup) { "finalState.isInstanceOf[OutOfGroup] failed" }
-      return finalState.stats.scores.sum()
+      finalState.stats.scores.sum()
     }
   }
 
   object Part2 {
-    fun solve(input: List<Char>): Int {
+    fun solve(input: List<Char>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val finalState = StateMachine(input).run()
       assert(finalState is OutOfGroup) { "finalState.isInstanceOf[OutOfGroup] failed" }
-      return finalState.stats.garbageCharCounter
+      finalState.stats.garbageCharCounter
     }
   }
 }

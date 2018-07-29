@@ -8,4 +8,12 @@ object Util {
     val lines = java.io.File(fqn).readLines()
     return lines
   }
+
+  fun <R> measureTimeMillis(init: R, block: () -> R): Pair<R, Long> {
+    var result = init
+    val ms = kotlin.system.measureTimeMillis {
+      result = block()
+    }
+    return Pair(result, ms)
+  }
 }

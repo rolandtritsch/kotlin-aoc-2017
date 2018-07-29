@@ -97,22 +97,22 @@ object Day08 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val instructions = parseInput(input)
       val registers = buildRegisters(instructions)
       val allRegisterStates = runProgram(instructions, registers)
 
-      return allRegisterStates.first().values.max()!!
+      allRegisterStates.first().values.max()!!
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val instructions = parseInput(input)
       val registers = buildRegisters(instructions)
       val allRegisterStates = runProgram(instructions, registers)
 
-      return allRegisterStates.flatMap { it.values }.max()!!
+      allRegisterStates.flatMap { it.values }.max()!!
     }
   }
 }

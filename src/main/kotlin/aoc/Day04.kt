@@ -43,10 +43,14 @@ object Day04 {
   }
 
   object Part1 {
-    fun solve(passPhrases: List<PassPhrase>): Int = countValid(passPhrases)
+    fun solve(passPhrases: List<PassPhrase>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      countValid(passPhrases)
+    }
   }
 
   object Part2 {
-    fun solve(passPhrases: List<PassPhrase>): Int = countValid(passPhrases.map { it.map { it.toCharArray().sorted().joinToString("") }})
+    fun solve(passPhrases: List<PassPhrase>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      countValid(passPhrases.map { it.map { it.toCharArray().sorted().joinToString("") }})
+    }
   }
 }

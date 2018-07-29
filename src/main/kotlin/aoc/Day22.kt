@@ -162,14 +162,14 @@ object Day22 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Int {
-      return run(SimpleGrid(1001).mapInput(parseInput(input)), Default.ticks1).numOfInfections
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(SimpleGrid(1001).mapInput(parseInput(input)), Default.ticks1).numOfInfections
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
-      return run(AdvancedGrid(1001).mapInput(parseInput(input)), Default.ticks2).numOfInfections
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(AdvancedGrid(1001).mapInput(parseInput(input)), Default.ticks2).numOfInfections
     }
   }
 }

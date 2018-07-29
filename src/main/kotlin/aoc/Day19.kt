@@ -103,14 +103,14 @@ object Day19 {
   }
 
   object Part1 {
-    fun solve(input: Array<CharArray>): String {
-      return walkTheMaze(input).first
+    fun solve(input: Array<CharArray>): Pair<String, Long> = aoc.Util.measureTimeMillis("") {
+      walkTheMaze(input).first
     }
   }
 
   object Part2 {
-    fun solve(input: Array<CharArray>): Int {
-      return walkTheMaze(input).second
+    fun solve(input: Array<CharArray>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      walkTheMaze(input).second
     }
   }
 }

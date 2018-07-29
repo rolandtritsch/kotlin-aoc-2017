@@ -61,21 +61,21 @@ object Day17 {
   }
 
   object Part1 {
-    fun solve(steps: Int, times: Int): Int {
+    fun solve(steps: Int, times: Int): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (position, buffer) = buildBuffer(mutableListOf(0), steps, times)
-      return buffer.get(position + 1)
+      buffer.get(position + 1)
     }
   }
 
   object Part2 {
-    fun solve(steps: Int, times: Int): Int {
+    fun solve(steps: Int, times: Int): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val (_, finalValue) = (1..times).fold(Pair(0, 0), { current, size ->
         val (currentPosition, currentValue) = current
         val nextPosition = moveForward(currentPosition, size, steps)
         if (nextPosition == 0) Pair(nextPosition + 1, size)
         else Pair(nextPosition + 1, currentValue)
       })
-      return finalValue
+      finalValue
     }
   }
 }

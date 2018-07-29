@@ -71,8 +71,8 @@ object Day13 {
   } //ensuring(result => result >= 0 && result <= fw.map {case (d, r) => d * r}.sum)
 
   object Part1 {
-    fun solve(input: List<String>): Int {
-      return calcSecScore(buildFw(parseInput(input)))
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      calcSecScore(buildFw(parseInput(input)))
     }
   }
 
@@ -86,13 +86,13 @@ object Day13 {
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       tailrec fun go(fw: List<Pair<Int, Int>>, delay: Int): Int {
         return if(passThrough(fw, delay)) delay
         else go(fw, delay + 1)
       }
 
-      return go(buildFw(parseInput(input)), 0)
+      go(buildFw(parseInput(input)), 0)
     }
   }
 }

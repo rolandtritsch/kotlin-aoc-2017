@@ -124,16 +124,16 @@ object Day16 {
 
 
   object Part1 {
-    fun solve(input: List<String>): String {
-      return executeMoves(initial, parseInput(input)).joinToString("")
+    fun solve(input: List<String>): Pair<String, Long> = aoc.Util.measureTimeMillis("") {
+      executeMoves(initial, parseInput(input)).joinToString("")
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): String {
+    fun solve(input: List<String>): Pair<String, Long> = aoc.Util.measureTimeMillis("") {
       val moves = parseInput(input)
       val loopTimes = findLoop(executeMoves(initial, moves), moves,1)
-      return executeDance(initial, moves, times % loopTimes).joinToString("")
+      executeDance(initial, moves, times % loopTimes).joinToString("")
     }
   }
 }

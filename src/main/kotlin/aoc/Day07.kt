@@ -114,11 +114,13 @@ object Day07 {
   }
 
   object Part1 {
-    fun solve(input: List<String>) = Tree.findRoot(parseInput(input))
+    fun solve(input: List<String>): Pair<String, Long> = aoc.Util.measureTimeMillis("") {
+      Tree.findRoot(parseInput(input))
+    }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val pnodes = parseInput(input)
       val root = Tree.build(Tree.findRoot(pnodes), pnodes)
       val badNode = Tree.findBadNode(root)
@@ -130,7 +132,7 @@ object Day07 {
       val bad = nodesByOccurences.find { it.first == 1 }!!.second
       val good = nodesByOccurences.find { it.first > 1 }!!.second
       val correctWeight = bad.weight - (Tree.calcWeight(bad) - Tree.calcWeight(good))
-      return correctWeight
+      correctWeight
     }
   }
 }

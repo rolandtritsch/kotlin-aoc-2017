@@ -258,7 +258,7 @@ object Day18 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Long {
+    fun solve(input: List<String>): Pair<Long, Long> = aoc.Util.measureTimeMillis(0) {
       fun done(p: Program): Boolean {
         return if (p.counter < 0 || p.counter >= p.instructions.size) true
         else when(p.instructions[p.counter]) {
@@ -280,14 +280,14 @@ object Day18 {
       val channel = LinkedBlockingDeque<Long>()
       val program = Program(0, 0, instructions, registers, channel, channel, 0, true, false)
 
-      return run(program, ::done, ::exit)
+      run(program, ::done, ::exit)
     }
   }
 
   @Volatile private var result0 = 0L
   @Volatile private var result1 = 0L
   object Part2 {
-    fun solve(input: List<String>): Long {
+    fun solve(input: List<String>): Pair<Long, Long> = aoc.Util.measureTimeMillis(0) {
       fun done(p: Program): Boolean {
         return p.counter < 0 || p.counter >= p.instructions.size || p.deadlocked
       }
@@ -313,7 +313,7 @@ object Day18 {
       thread0.join(60*SECS)
       thread1.join(60*SECS)
 
-      return result0 + result1
+      result0 + result1
     }
   }
 }

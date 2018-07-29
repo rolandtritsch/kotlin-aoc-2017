@@ -29,8 +29,8 @@ object Day02 {
       return s.map { (it.max() ?: 0) - (it.min() ?: 0) }
     }
 
-    fun solve(spreadSheet: List<List<Int>>): Int {
-      return Day02.checksum(spreadSheet, Part1::processRow)
+    fun solve(spreadSheet: List<List<Int>>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      Day02.checksum(spreadSheet, Part1::processRow)
     }
   }
 
@@ -50,8 +50,8 @@ object Day02 {
       return divs
     }
 
-    fun solve(spreadSheet: List<List<Int>>): Int {
-      return Day02.checksum(spreadSheet, Part2::processRow)
+    fun solve(spreadSheet: List<List<Int>>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      Day02.checksum(spreadSheet, Part2::processRow)
     }
   }
 }

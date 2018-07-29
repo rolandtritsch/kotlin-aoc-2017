@@ -77,14 +77,14 @@ object Day20 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Int {
-      return findClosest(run(parseInput(input)))
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      findClosest(run(parseInput(input)))
     }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int {
-      return runWithCollisionDetection(parseInput(input)).size
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      runWithCollisionDetection(parseInput(input)).size
     }
   }
 }

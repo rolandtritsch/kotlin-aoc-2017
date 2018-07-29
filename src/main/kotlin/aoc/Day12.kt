@@ -58,10 +58,14 @@ object Day12 {
   }
 
   object Part1 {
-    fun solve(input: List<String>): Int = findPrograms(0, parseInput(input)).size
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      findPrograms(0, parseInput(input)).size
+    }
   }
 
   object Part2 {
-    fun solve(input: List<String>): Int = findGroups(parseInput(input)).size
+    fun solve(input: List<String>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      findGroups(parseInput(input)).size
+    }
   }
 }

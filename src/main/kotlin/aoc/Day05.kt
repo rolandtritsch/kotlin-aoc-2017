@@ -40,11 +40,15 @@ object Day05 {
 
   object Part1 {
     fun offset(sc: Int) = sc + 1
-    fun solve(stack: List<Int>) = countSteps(stack.toMutableList(), 0, 1, Part1::offset)
+    fun solve(stack: List<Int>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      countSteps(stack.toMutableList(), 0, 1, Part1::offset)
+    }
   }
 
   object Part2 {
     fun offset(sc: Int) = if(sc >= 3) sc - 1 else sc + 1
-    fun solve(stack: List<Int>) = countSteps(stack.toMutableList(), 0, 1, Part2::offset)
+    fun solve(stack: List<Int>): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      countSteps(stack.toMutableList(), 0, 1, Part2::offset)
+    }
   }
 }

@@ -1,5 +1,7 @@
 package aoc.day01
 
+import kotlin.system.measureTimeMillis
+
 /** Problem: [[https://adventofcode.com/2017/day/1]]
   *
   * Solution:
@@ -29,23 +31,21 @@ object Day01 {
   }
 
   object Part1 {
-    fun solve(input: String): Int {
+    fun solve(input: String): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       require(input.isNotEmpty()) { "input.nonEmpty failed" }
       require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
 
-      val captcha = Day01.captcha(input, 1)
-      return captcha
+      Day01.captcha(input, 1)
     }
   }
 
   object Part2 {
-    fun solve(input: String): Int {
+    fun solve(input: String): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       require(input.isNotEmpty()) { "input.nonEmpty failed" }
       require(input.all { it.isDigit() }) { "input.all(it.isDigit) failed" }
       require(input.length % 2 == 0) { "input.length % 2 == 0 failed" }
 
-      val captcha = Day01.captcha(input, input.length / 2)
-      return captcha
+      Day01.captcha(input, input.length / 2)
     }
   }
 }

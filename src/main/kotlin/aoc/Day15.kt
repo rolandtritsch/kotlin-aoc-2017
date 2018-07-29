@@ -81,10 +81,14 @@ object Day15 {
 
 
   object Part1 {
-    fun solve(): Int = run(Pair(1, 1), 40000000)
+    fun solve(): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(Pair(1, 1), 40000000)
+    }
   }
 
   object Part2 {
-    fun solve(): Int = run(Pair(4, 8), 5000000)
+    fun solve(): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      run(Pair(4, 8), 5000000)
+    }
   }
 }

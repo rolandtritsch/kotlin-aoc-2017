@@ -89,9 +89,9 @@ object Day25 {
   }
 
   object Part1 {
-    fun solve(input: Int): Int {
+    fun solve(input: Int): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
       val tape = Tape(Array(100001) { 0 })
-      return run(StateA(tape.size / 2, tape), input).checkSum()
+      run(StateA(tape.size / 2, tape), input).checkSum()
     }
   }
 }

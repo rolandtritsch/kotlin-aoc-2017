@@ -47,8 +47,8 @@ object Day14 {
   } // ensuring(result => result.size == hex.size * 4)
 
   object Part1 {
-    fun solve(input: String): Int {
-      return buildGrid(input).fold(0, { sum, hash -> sum + hash.count { it }})
+    fun solve(input: String): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      buildGrid(input).fold(0, { sum, hash -> sum + hash.count { it }})
     }
   }
 
@@ -108,8 +108,8 @@ object Day14 {
   } //ensuring(result => result.nonEmpty && result.contains(row, col))
 
   object Part2 {
-    fun solve(input: String): Int {
-      return findRegions(buildGrid(input)).size
+    fun solve(input: String): Pair<Int, Long> = aoc.Util.measureTimeMillis(0) {
+      findRegions(buildGrid(input)).size
     }
   }
 }
