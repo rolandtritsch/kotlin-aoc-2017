@@ -1,4 +1,4 @@
-# Porting scala-aoc-2017 to kotlin (to learn the language)
+# Porting [scala-aoc-2017](https://github.com/rolandtritsch/scala-aoc-2017) to Kotlin (to learn the language)
 
 To make this work you need to ...
 
@@ -11,5 +11,5 @@ To make this work you need to ...
 
 If you want to develop something ...
 
-* run `gradle test --continuous --rerun-tasks`
+* run `gradle test --continuous`
   * Note: If one of the tests is failing, you will see a stacktrace, but the build will still be successful.
