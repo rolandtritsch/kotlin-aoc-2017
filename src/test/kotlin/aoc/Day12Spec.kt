@@ -7,10 +7,10 @@ class Day12Spec : ShouldSpec({
 
   "solve()" should {
     "part1" {
-      Day12.Part1.solve(Day12.input) shouldBe 152
+      Day12.Part1.solve(Day12.input).first shouldBe 152
     }
     "part2" {
-      Day12.Part2.solve(Day12.input) shouldBe 186
+      Day12.Part2.solve(Day12.input).first shouldBe 186
     }
   }
 })

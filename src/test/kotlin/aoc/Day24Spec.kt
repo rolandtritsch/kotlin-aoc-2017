@@ -7,11 +7,11 @@ class Day24Spec : StringSpec({
 
   "should solve()" {
     "part1" {
-      Day24.Part1.solve(Day24.input) shouldBe 1695
+      Day24.Part1.solve(Day24.input).first shouldBe 1695
     }
 
     "part2" {
-      Day24.Part2.solve(Day24.input) shouldBe 1673
+      Day24.Part2.solve(Day24.input).first shouldBe 1673
     }
   }
 })

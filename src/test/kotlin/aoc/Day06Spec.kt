@@ -6,11 +6,11 @@ import io.kotlintest.specs.ShouldSpec
 class Day06Spec : ShouldSpec({
   "solve()" should {
     "part1" {
-      Day06.Part1.solve(Day06.input) shouldBe 14029
+      Day06.Part1.solve(Day06.input).first shouldBe 14029
     }
 
     "part2" {
-      Day06.Part2.solve(Day06.input) shouldBe 2765
+      Day06.Part2.solve(Day06.input).first shouldBe 2765
     }
   }
 })

@@ -7,11 +7,11 @@ class Day19Spec : ShouldSpec({
 
   "solve()" should {
     "part1" {
-      Day19.Part1.solve(Day19.input) shouldBe "PVBSCMEQHY"
+      Day19.Part1.solve(Day19.input).first shouldBe "PVBSCMEQHY"
     }
 
     "part2" {
-      Day19.Part2.solve(Day19.input) shouldBe 17736
+      Day19.Part2.solve(Day19.input).first shouldBe 17736
     }
   }
 })
