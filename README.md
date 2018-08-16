@@ -1,4 +1,4 @@
-# Porting [scala-aoc-2017](https://github.com/rolandtritsch/scala-aoc-2017) to Kotlin (to learn the language)
+# [Advent of Code](https://adventofcode.com) - 2017 (Kotlin Edition)
 
 To make this work you need to ...
 
